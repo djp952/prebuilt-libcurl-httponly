@@ -1,4 +1,4 @@
-# LIBCURL 7.57.0 (HTTP Only)
+# LIBCURL 7.60.0 (HTTP Only)
 [https://github.com/curl/curl](https://github.com/curl/curl)   
   
 **TARGETS**   
@@ -13,12 +13,13 @@
 * osx-x86_64 (apple-darwin15)   
    
 **BUILD ENVIRONMENT**  
-* Windows 10 x64 16299 "Fall Creator's Update"   
-* Bash on Ubuntu on Windows 16.04.2 LTS   
+* Windows 10 x64 1803 (17134) "April 2018 Update"   
+* Windows Subsystem for Linux   
+* [Ubuntu on Windows 16.04.4 LTS](https://www.microsoft.com/store/productId/9NBLGGH4MSV6)   
 * OSXCROSS Cross-Compiler (with Mac OSX 10.11 SDK)   
   
-**CONFIGURE BASH ON UBUNTU ON WINDOWS**   
-Open "Bash on Ubuntu on Windows"   
+**CONFIGURE UBUNTU ON WINDOWS**   
+Open "Ubuntu"   
 ```
 sudo dpkg --add-architecture i386
 sudo apt-get update
@@ -28,18 +29,18 @@ sudo apt-get install autoconf libtool make p7zip-full python
 ```
    
 **CONFIGURE ANDROID TOOLCHAINS**   
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu"   
 ```
-wget https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip
-7z x android-ndk-r12b-linux-x86_64.zip
-android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch arm --api 21 --stl gnustl --install-dir ./arm-linux-androideabi
-android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch arm64 --api 21 --stl gnustl --install-dir ./aarch64-linux-android
-android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch x86 --api 21 --stl gnustl --install-dir ./i686-linux-android
+wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
+7z x android-ndk-r16b-linux-x86_64.zip
+android-ndk-r16b/build/tools/make_standalone_toolchain.py --arch arm --api 21 --stl libc++ --install-dir ./arm-linux-androideabi
+android-ndk-r16b/build/tools/make_standalone_toolchain.py --arch arm64 --api 21 --stl libc++ --install-dir ./aarch64-linux-android
+android-ndk-r16b/build/tools/make_standalone_toolchain.py --arch x86 --api 21 --stl libc++ --install-dir ./i686-linux-android
 ```
   
 **CONFIGURE OSXCROSS CROSS-COMPILER**   
 * Generate the MAC OSX 10.11 SDK Package for OSXCROSS by following the instructions provided at [PACKAGING THE SDK](https://github.com/tpoechtrager/osxcross#packaging-the-sdk).  The suggested version of Xcode to use when generating the SDK package is Xcode 7.3.1 (May 3, 2016).
-* Open "Bash on Ubuntu on Windows"   
+* Open "Ubuntu on Windows"   
 ```
 sudo apt-get install make clang zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
 git clone https://github.com/tpoechtrager/osxcross --depth=1
@@ -49,9 +50,9 @@ GCC_VERSION=4.9.3 osxcross/build_gcc.sh
 ```
    
 **BUILD LIBCURL (linux-i686)**   
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu on Windows"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_57_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_60_0 --depth=1
 export CC=gcc-4.9
 export AR=gcc-ar-4.9
 export RANLIB=gcc-ranlib-4.9
@@ -66,9 +67,9 @@ Get header files from include/curl
 Get libcurl.a from lib/.libs   
 
 **BUILD LIBCURL (linux-x86_64)**   
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu on Windows"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_57_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_60_0 --depth=1
 export CC=gcc-4.9
 export AR=gcc-ar-4.9
 export RANLIB=gcc-ranlib-4.9
@@ -83,9 +84,9 @@ Get header files from include/curl
 Get libcurl.a from lib/.libs   
    
 **BUILD LIBCURL (linux-armel)**   
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu on Windows"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_57_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_60_0 --depth=1
 export CC=arm-linux-gnueabi-gcc-4.9
 export AR=arm-linux-gnueabi-gcc-ar-4.9
 export RANLIB=arm-linux-gnueabi-gcc-ranlib-4.9
@@ -99,9 +100,9 @@ Get header files from include/curl
 Get libcurl.a from lib/.libs   
    
 **BUILD LIBCURL (linux-armhf)**   
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu on Windows"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_57_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_60_0 --depth=1
 export CC=arm-linux-gnueabihf-gcc-4.9
 export AR=arm-linux-gnueabihf-gcc-ar-4.9
 export RANLIB=arm-linux-gnueabihf-gcc-ranlib-4.9
@@ -115,9 +116,9 @@ Get header files from include/curl
 Get libcurl.a from lib/.libs   
    
 **BUILD LIBCURL (linux-aarch64)**   
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu on Windows"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_57_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_60_0 --depth=1
 export CC=aarch64-linux-gnu-gcc-4.9
 export AR=aarch64-linux-gnu-gcc-ar-4.9
 export RANLIB=aarch64-linux-gnu-gcc-ranlib-4.9
@@ -131,11 +132,12 @@ Get header files from include/curl
 Get libcurl.a from lib/.libs   
    
 **BUILD LIBCURL (android-armeabi-v7a)**
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu on Windows"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_57_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_60_0 --depth=1
 export PATH=$(pwd)/arm-linux-androideabi/bin:$PATH
 export CROSS_COMPILE=arm-linux-androideabi-
+export CFLAGS="-D__ANDROID_API__=21"
 export LIBS=-ldl
 cd curl
 ./buildconf
@@ -146,11 +148,12 @@ Get header files from include/curl
 Get libcurl.a from lib/.libs   
    
 **BUILD LIBCURL (android-arm64-v8a)**
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu on Windows"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_57_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_60_0 --depth=1
 export PATH=$(pwd)/aarch64-linux-android/bin:$PATH
 export CROSS_COMPILE=aarch64-linux-android-
+export CFLAGS="-D__ANDROID_API__=21"
 export LIBS=-ldl
 cd curl
 ./buildconf
@@ -161,11 +164,12 @@ Get header files from include/curl
 Get libcurl.a from lib/.libs   
    
 **BUILD LIBCURL (android-x86)**
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu on Windows"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_57_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_60_0 --depth=1
 export PATH=$(pwd)/i686-linux-android/bin:$PATH
 export CROSS_COMPILE=i686-linux-android-
+export CFLAGS="-D__ANDROID_API__=21"
 export LIBS=-ldl
 cd curl
 ./buildconf
@@ -176,10 +180,10 @@ Get header files from include/curl
 Get libcurl.a from lib/.libs   
    
 **BUILD LIBCURL (raspbian-armhf)**   
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu on Windows"   
 ```
 git clone https://github.com/raspberrypi/tools.git raspberrypi --depth=1
-git clone https://github.com/curl/curl.git -b curl-7_57_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_60_0 --depth=1
 export PATH=$(pwd)/raspberrypi/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin:$PATH
 export CC=arm-linux-gnueabihf-gcc
 export AR=arm-linux-gnueabihf-gcc-ar
@@ -194,9 +198,9 @@ Get header files from include/curl
 Get libcurl.a from lib/.libs   
    
 **BUILD LIBCURL (osx-x86_64)**   
-Open "Bash on Ubuntu on Windows"   
+Open "Ubuntu on Windows"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_57_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_60_0 --depth=1
 export PATH=$(pwd)/osxcross/target/bin:$PATH
 export CROSS_COMPILE=x86_64-apple-darwin15-
 export CFLAGS="-mmacosx-version-min=10.7 -stdlib=libc++"
