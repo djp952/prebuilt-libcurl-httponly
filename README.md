@@ -7,9 +7,11 @@
 * linux-armel (gcc-4.9)   
 * linux-armhf (gcc-4.9)   
 * linux-aarch64 (gcc-4.9)   
-* android-armeabi-v7a (ndk-r12b/api-21)   
-* android-arm64-v8a (ndk-r12b/api-21)  
-* android-x86 (ndk-r12b/api-21)  
+* android-17-armeabi-v7a (ndk-r12b/api-17)   
+* android-21-armeabi-v7a (ndk-r12b/api-21)   
+* android-21-arm64-v8a (ndk-r12b/api-21)  
+* android-17-x86 (ndk-r12b/api-17)  
+* android-21-x86 (ndk-r12b/api-21)  
 * osx-x86_64 (apple-darwin15)   
    
 **BUILD ENVIRONMENT**  
@@ -33,9 +35,11 @@ Open "Ubuntu"
 ```
 wget https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip
 7z x android-ndk-r12b-linux-x86_64.zip
-android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch arm --api 21 --stl gnustl --install-dir ./arm-linux-androideabi
-android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch arm64 --api 21 --stl gnustl --install-dir ./aarch64-linux-android
-android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch x86 --api 21 --stl gnustl --install-dir ./i686-linux-android
+android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch arm --api 17 --stl gnustl --install-dir ./arm-linux-androideabi-17
+android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch x86 --api 17 --stl gnustl --install-dir ./i686-linux-android-17
+android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch arm --api 21 --stl gnustl --install-dir ./arm-linux-androideabi-21
+android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch arm64 --api 21 --stl gnustl --install-dir ./aarch64-linux-android-21
+android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch x86 --api 21 --stl gnustl --install-dir ./i686-linux-android-21
 ```
   
 **CONFIGURE OSXCROSS CROSS-COMPILER**   
@@ -131,11 +135,11 @@ make
 Get header files from include/curl   
 Get libcurl.a from lib/.libs   
    
-**BUILD LIBCURL (android-armeabi-v7a)**
+**BUILD LIBCURL (android-17-armeabi-v7a)**
 Open "Ubuntu"   
 ```
 git clone https://github.com/curl/curl.git -b curl-7_61_0 --depth=1
-export PATH=$(pwd)/arm-linux-androideabi/bin:$PATH
+export PATH=$(pwd)/arm-linux-androideabi-17/bin:$PATH
 export CROSS_COMPILE=arm-linux-androideabi-
 export LIBS=-ldl
 cd curl
@@ -146,11 +150,26 @@ make
 Get header files from include/curl   
 Get libcurl.a from lib/.libs   
    
-**BUILD LIBCURL (android-arm64-v8a)**
+**BUILD LIBCURL (android-21-armeabi-v7a)**
 Open "Ubuntu"   
 ```
 git clone https://github.com/curl/curl.git -b curl-7_61_0 --depth=1
-export PATH=$(pwd)/aarch64-linux-android/bin:$PATH
+export PATH=$(pwd)/arm-linux-androideabi-21/bin:$PATH
+export CROSS_COMPILE=arm-linux-androideabi-
+export LIBS=-ldl
+cd curl
+./buildconf
+./configure --with-pic --without-ssl --without-zlib --host=arm-linux-androideabi --target=arm-linux-androideabi --disable-shared --disable-ftp --disable-file --disable-ldap --disable-ldaps --disable-telnet --disable-dict --disable-file --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher
+make
+```
+Get header files from include/curl   
+Get libcurl.a from lib/.libs   
+   
+**BUILD LIBCURL (android-21-arm64-v8a)**
+Open "Ubuntu"   
+```
+git clone https://github.com/curl/curl.git -b curl-7_61_0 --depth=1
+export PATH=$(pwd)/aarch64-linux-android-21/bin:$PATH
 export CROSS_COMPILE=aarch64-linux-android-
 export LIBS=-ldl
 cd curl
@@ -161,11 +180,26 @@ make
 Get header files from include/curl   
 Get libcurl.a from lib/.libs   
    
-**BUILD LIBCURL (android-x86)**
+**BUILD LIBCURL (android-17-x86)**
 Open "Ubuntu"   
 ```
 git clone https://github.com/curl/curl.git -b curl-7_61_0 --depth=1
-export PATH=$(pwd)/i686-linux-android/bin:$PATH
+export PATH=$(pwd)/i686-linux-android-17/bin:$PATH
+export CROSS_COMPILE=i686-linux-android-
+export LIBS=-ldl
+cd curl
+./buildconf
+./configure --with-pic --without-ssl --without-zlib --host=i686-linux-android --target=i686-linux-android --disable-shared --disable-ftp --disable-file --disable-ldap --disable-ldaps --disable-telnet --disable-dict --disable-file --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher
+make
+```
+Get header files from include/curl   
+Get libcurl.a from lib/.libs   
+   
+**BUILD LIBCURL (android-21-x86)**
+Open "Ubuntu"   
+```
+git clone https://github.com/curl/curl.git -b curl-7_61_0 --depth=1
+export PATH=$(pwd)/i686-linux-android-21/bin:$PATH
 export CROSS_COMPILE=i686-linux-android-
 export LIBS=-ldl
 cd curl
