@@ -1,4 +1,4 @@
-# LIBCURL 7.65.2 (HTTP Only)
+# LIBCURL 7.65.3 (HTTP Only)
 [https://github.com/curl/curl](https://github.com/curl/curl)   
   
 **TARGETS**   
@@ -57,7 +57,7 @@ GCC_VERSION=4.9.3 osxcross/build_gcc.sh
 **BUILD LIBCURL (linux-i686)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export CC=gcc-4.9
 export AR=gcc-ar-4.9
 export RANLIB=gcc-ranlib-4.9
@@ -74,7 +74,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (linux-x86_64)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export CC=gcc-4.9
 export AR=gcc-ar-4.9
 export RANLIB=gcc-ranlib-4.9
@@ -91,7 +91,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (linux-armel)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export CC=arm-linux-gnueabi-gcc-4.9
 export AR=arm-linux-gnueabi-gcc-ar-4.9
 export RANLIB=arm-linux-gnueabi-gcc-ranlib-4.9
@@ -107,7 +107,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (linux-armhf)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export CC=arm-linux-gnueabihf-gcc-4.9
 export AR=arm-linux-gnueabihf-gcc-ar-4.9
 export RANLIB=arm-linux-gnueabihf-gcc-ranlib-4.9
@@ -123,7 +123,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (linux-aarch64)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export CC=aarch64-linux-gnu-gcc-4.9
 export AR=aarch64-linux-gnu-gcc-ar-4.9
 export RANLIB=aarch64-linux-gnu-gcc-ranlib-4.9
@@ -139,7 +139,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-17-armeabi-v7a)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export PATH=$(pwd)/arm-linux-androideabi-17/bin:$PATH
 export CROSS_COMPILE=arm-linux-androideabi-
 export LIBS=-ldl
@@ -154,7 +154,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-21-armeabi-v7a)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export PATH=$(pwd)/arm-linux-androideabi-21/bin:$PATH
 export CROSS_COMPILE=arm-linux-androideabi-
 export LIBS=-ldl
@@ -169,7 +169,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-21-arm64-v8a)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export PATH=$(pwd)/aarch64-linux-android-21/bin:$PATH
 export CROSS_COMPILE=aarch64-linux-android-
 export LIBS=-ldl
@@ -184,7 +184,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-17-x86)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export PATH=$(pwd)/i686-linux-android-17/bin:$PATH
 export CROSS_COMPILE=i686-linux-android-
 export LIBS=-ldl
@@ -199,7 +199,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-21-x86)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export PATH=$(pwd)/i686-linux-android-21/bin:$PATH
 export CROSS_COMPILE=i686-linux-android-
 export LIBS=-ldl
@@ -215,7 +215,7 @@ Get libcurl.a from lib/.libs
 Open "Ubuntu"   
 ```
 git clone https://github.com/raspberrypi/tools.git raspberrypi --depth=1
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export PATH=$(pwd)/raspberrypi/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin:$PATH
 export CC=arm-linux-gnueabihf-gcc
 export AR=arm-linux-gnueabihf-gcc-ar
@@ -232,7 +232,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (osx-x86_64)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_65_2 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_65_3 --depth=1
 export PATH=$(pwd)/osxcross/target/bin:$PATH
 export CROSS_COMPILE=x86_64-apple-darwin15-
 export CFLAGS="-mmacosx-version-min=10.7 -stdlib=libc++"
