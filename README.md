@@ -7,9 +7,12 @@
 * linux-armel (gcc-4.9)   
 * linux-armhf (gcc-4.9)   
 * linux-aarch64 (gcc-4.9)   
-* android-21-armeabi-v7a (ndk-r12b/api-21)   
-* android-21-arm64-v8a (ndk-r12b/api-21)  
-* android-21-x86 (ndk-r12b/api-21)  
+* android-21-armeabi-v7a (ndk-r20b/api-21)   
+* android-21-arm64-v8a (ndk-r20b/api-21)  
+* android-21-x86 (ndk-r20b/api-21)  
+* android-28-armeabi-v7a (ndk-r20b/api-28)   
+* android-28-arm64-v8a (ndk-r20b/api-28)  
+* android-28-x86 (ndk-r20b/api-28)  
 * raspbian-armhf   
 * osx-x86_64 (apple-darwin15)   
    
@@ -32,11 +35,8 @@ sudo apt-get install autoconf libtool make p7zip-full python
 **CONFIGURE ANDROID TOOLCHAINS**   
 Open "Ubuntu"   
 ```
-wget https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip
-7z x android-ndk-r12b-linux-x86_64.zip
-android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch arm --api 21 --stl gnustl --install-dir ./arm-linux-androideabi-21
-android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch arm64 --api 21 --stl gnustl --install-dir ./aarch64-linux-android-21
-android-ndk-r12b/build/tools/make_standalone_toolchain.py --arch x86 --api 21 --stl gnustl --install-dir ./i686-linux-android-21
+wget https://dl.google.com/android/repository/android-ndk-r20b-linux-x86_64.zip
+7z x android-ndk-r20b-linux-x86_64.zip
 ```
   
 **CONFIGURE OSXCROSS CROSS-COMPILER**   
@@ -136,8 +136,14 @@ Get libcurl.a from lib/.libs
 Open "Ubuntu"   
 ```
 git clone https://github.com/curl/curl.git -b curl-7_67_0 --depth=1
-export PATH=$(pwd)/arm-linux-androideabi-21/bin:$PATH
-export CROSS_COMPILE=arm-linux-androideabi-
+export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
+export AR=$TOOLCHAIN/bin/arm-linux-androideabi-ar
+export AS=$TOOLCHAIN/bin/arm-linux-androideabi-as
+export CC=$TOOLCHAIN/bin/armv7a-linux-androideabi21-clang
+export CXX=$TOOLCHAIN/bin/armv7a-linux-androideabi21-clang++
+export LD=$TOOLCHAIN/bin/arm-linux-androideabi-ld
+export RANLIB=$TOOLCHAIN/bin/arm-linux-androideabi-ranlib
+export STRIP=$TOOLCHAIN/bin/arm-linux-androideabi-strip
 export LIBS=-ldl
 cd curl
 ./buildconf
@@ -151,8 +157,14 @@ Get libcurl.a from lib/.libs
 Open "Ubuntu"   
 ```
 git clone https://github.com/curl/curl.git -b curl-7_67_0 --depth=1
-export PATH=$(pwd)/aarch64-linux-android-21/bin:$PATH
-export CROSS_COMPILE=aarch64-linux-android-
+export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
+export AR=$TOOLCHAIN/bin/aarch64-linux-android-ar
+export AS=$TOOLCHAIN/bin/aarch64-linux-android-as
+export CC=$TOOLCHAIN/bin/aarch64-linux-android21-clang
+export CXX=$TOOLCHAIN/bin/aarch64-linux-android21-clang++
+export LD=$TOOLCHAIN/bin/aarch64-linux-android-ld
+export RANLIB=$TOOLCHAIN/bin/aarch64-linux-android-ranlib
+export STRIP=$TOOLCHAIN/bin/aarch64-linux-android-strip
 export LIBS=-ldl
 cd curl
 ./buildconf
@@ -166,8 +178,77 @@ Get libcurl.a from lib/.libs
 Open "Ubuntu"   
 ```
 git clone https://github.com/curl/curl.git -b curl-7_67_0 --depth=1
-export PATH=$(pwd)/i686-linux-android-21/bin:$PATH
-export CROSS_COMPILE=i686-linux-android-
+export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
+export AR=$TOOLCHAIN/bin/i686-linux-android-ar
+export AS=$TOOLCHAIN/bin/i686-linux-android-as
+export CC=$TOOLCHAIN/bin/i686-linux-android21-clang
+export CXX=$TOOLCHAIN/bin/i686-linux-android21-clang++
+export LD=$TOOLCHAIN/bin/i686-linux-android-ld
+export RANLIB=$TOOLCHAIN/bin/i686-linux-android-ranlib
+export STRIP=$TOOLCHAIN/bin/i686-linux-android-strip
+export LIBS=-ldl
+cd curl
+./buildconf
+./configure --with-pic --without-ssl --without-zlib --host=i686-linux-android --target=i686-linux-android --disable-shared --disable-ftp --disable-file --disable-ldap --disable-ldaps --disable-telnet --disable-dict --disable-file --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher
+make
+```
+Get header files from include/curl   
+Get libcurl.a from lib/.libs   
+   
+**BUILD LIBCURL (android-28-armeabi-v7a)**
+Open "Ubuntu"   
+```
+git clone https://github.com/curl/curl.git -b curl-7_67_0 --depth=1
+export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
+export AR=$TOOLCHAIN/bin/arm-linux-androideabi-ar
+export AS=$TOOLCHAIN/bin/arm-linux-androideabi-as
+export CC=$TOOLCHAIN/bin/armv7a-linux-androideabi28-clang
+export CXX=$TOOLCHAIN/bin/armv7a-linux-androideabi28-clang++
+export LD=$TOOLCHAIN/bin/arm-linux-androideabi-ld
+export RANLIB=$TOOLCHAIN/bin/arm-linux-androideabi-ranlib
+export STRIP=$TOOLCHAIN/bin/arm-linux-androideabi-strip
+export LIBS=-ldl
+cd curl
+./buildconf
+./configure --with-pic --without-ssl --without-zlib --host=arm-linux-androideabi --target=arm-linux-androideabi --disable-shared --disable-ftp --disable-file --disable-ldap --disable-ldaps --disable-telnet --disable-dict --disable-file --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher
+make
+```
+Get header files from include/curl   
+Get libcurl.a from lib/.libs   
+   
+**BUILD LIBCURL (android-28-arm64-v8a)**
+Open "Ubuntu"   
+```
+git clone https://github.com/curl/curl.git -b curl-7_67_0 --depth=1
+export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
+export AR=$TOOLCHAIN/bin/aarch64-linux-android-ar
+export AS=$TOOLCHAIN/bin/aarch64-linux-android-as
+export CC=$TOOLCHAIN/bin/aarch64-linux-android28-clang
+export CXX=$TOOLCHAIN/bin/aarch64-linux-android28-clang++
+export LD=$TOOLCHAIN/bin/aarch64-linux-android-ld
+export RANLIB=$TOOLCHAIN/bin/aarch64-linux-android-ranlib
+export STRIP=$TOOLCHAIN/bin/aarch64-linux-android-strip
+export LIBS=-ldl
+cd curl
+./buildconf
+./configure --with-pic --without-ssl --without-zlib --host=aarch64-linux-android --target=aarch64-linux-android --disable-shared --disable-ftp --disable-file --disable-ldap --disable-ldaps --disable-telnet --disable-dict --disable-file --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher
+make
+```
+Get header files from include/curl   
+Get libcurl.a from lib/.libs   
+   
+**BUILD LIBCURL (android-28-x86)**
+Open "Ubuntu"   
+```
+git clone https://github.com/curl/curl.git -b curl-7_67_0 --depth=1
+export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
+export AR=$TOOLCHAIN/bin/i686-linux-android-ar
+export AS=$TOOLCHAIN/bin/i686-linux-android-as
+export CC=$TOOLCHAIN/bin/i686-linux-android28-clang
+export CXX=$TOOLCHAIN/bin/i686-linux-android28-clang++
+export LD=$TOOLCHAIN/bin/i686-linux-android-ld
+export RANLIB=$TOOLCHAIN/bin/i686-linux-android-ranlib
+export STRIP=$TOOLCHAIN/bin/i686-linux-android-strip
 export LIBS=-ldl
 cd curl
 ./buildconf
