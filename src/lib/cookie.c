@@ -1090,8 +1090,6 @@ Curl_cookie_add(struct Curl_easy *data,
  *
  * If 'newsession' is TRUE, discard all "session cookies" on read from file.
  *
- * Note that 'data' might be called as NULL pointer.
- *
  * Returns NULL on out of memory. Invalid cookies are ignored.
  ****************************************************************************/
 struct CookieInfo *Curl_cookie_init(struct Curl_easy *data,
@@ -1162,8 +1160,6 @@ struct CookieInfo *Curl_cookie_init(struct Curl_easy *data,
   }
 
   c->running = TRUE;          /* now, we're running */
-  if(data)
-    data->state.cookie_engine = TRUE;
 
   return c;
 
@@ -1532,28 +1528,28 @@ static int cookie_output(struct CookieInfo *c, const char *dumphere)
 
   if(c->numcookies) {
     unsigned int i;
-    size_t nvalid = 0;
+    unsigned int j;
     struct Cookie **array;
 
-    array = calloc(1, sizeof(struct Cookie *) * c->numcookies);
+    array = malloc(sizeof(struct Cookie *) * c->numcookies);
     if(!array) {
       if(!use_stdout)
         fclose(out);
       return 1;
     }
 
-    /* only sort the cookies with a domain property */
+    j = 0;
     for(i = 0; i < COOKIE_HASH_SIZE; i++) {
       for(co = c->cookies[i]; co; co = co->next) {
         if(!co->domain)
           continue;
-        array[nvalid++] = co;
+        array[j++] = co;
       }
     }
 
-    qsort(array, nvalid, sizeof(struct Cookie *), cookie_sort_ct);
+    qsort(array, c->numcookies, sizeof(struct Cookie *), cookie_sort_ct);
 
-    for(i = 0; i < nvalid; i++) {
+    for(i = 0; i < j; i++) {
       char *format_ptr = get_netscape_format(array[i]);
       if(format_ptr == NULL) {
         fprintf(out, "#\n# Fatal libcurl error\n");
@@ -1617,7 +1613,7 @@ struct curl_slist *Curl_cookie_list(struct Curl_easy *data)
   return list;
 }
 
-void Curl_flush_cookies(struct Curl_easy *data, bool cleanup)
+void Curl_flush_cookies(struct Curl_easy *data, int cleanup)
 {
   if(data->set.str[STRING_COOKIEJAR]) {
     if(data->change.cookielist) {
@@ -1646,7 +1642,6 @@ void Curl_flush_cookies(struct Curl_easy *data, bool cleanup)
 
   if(cleanup && (!data->share || (data->cookies != data->share->cookies))) {
     Curl_cookie_cleanup(data->cookies);
-    data->cookies = NULL;
   }
   Curl_share_unlock(data, CURL_LOCK_DATA_COOKIE);
 }

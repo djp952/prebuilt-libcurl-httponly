@@ -32,9 +32,7 @@ lib562
  <name>
 FTP type=A URL and CURLOPT_PORT set and proxy
  </name>
-<features>
-proxy
-</features>
+
 <setenv>
 ftp_proxy=http://%HOSTIP:%HTTPPORT/
 </setenv>

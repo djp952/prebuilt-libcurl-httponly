@@ -53,9 +53,6 @@ HTTP CONNECT with 204 response
  <command>
 http://test.1904:%HTTPPORT/we/want/that/page/1904 -p --proxy %HOSTIP:%PROXYPORT
 </command>
-<features>
-proxy
-</features>
 </client>
 
 #

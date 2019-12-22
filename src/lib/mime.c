@@ -1135,8 +1135,6 @@ CURLcode Curl_mime_duppart(curl_mimepart *dst, const curl_mimepart *src)
   const curl_mimepart *s;
   CURLcode res = CURLE_OK;
 
-  DEBUGASSERT(dst);
-
   /* Duplicate content. */
   switch(src->kind) {
   case MIMEKIND_NONE:
@@ -1186,18 +1184,20 @@ CURLcode Curl_mime_duppart(curl_mimepart *dst, const curl_mimepart *src)
     }
   }
 
-  if(!res) {
-    /* Duplicate other fields. */
+  /* Duplicate other fields. */
+  if(dst != NULL)
     dst->encoder = src->encoder;
+  else
+    res = CURLE_WRITE_ERROR;
+  if(!res)
     res = curl_mime_type(dst, src->mimetype);
-  }
   if(!res)
     res = curl_mime_name(dst, src->name);
   if(!res)
     res = curl_mime_filename(dst, src->filename);
 
   /* If an error occurred, rollback. */
-  if(res)
+  if(res && dst)
     Curl_mime_cleanpart(dst);
 
   return res;
@@ -1898,13 +1898,6 @@ CURLcode curl_mime_headers(curl_mimepart *part,
   (void) part;
   (void) headers;
   (void) take_ownership;
-  return CURLE_NOT_BUILT_IN;
-}
-
-CURLcode Curl_mime_add_header(struct curl_slist **slp, const char *fmt, ...)
-{
-  (void)slp;
-  (void)fmt;
   return CURLE_NOT_BUILT_IN;
 }
 

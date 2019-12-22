@@ -29,7 +29,6 @@ http
 <features>
 http
 ftp
-proxy
 </features>
  <name>
 FTP RETR twice over proxy confirming persistent connection

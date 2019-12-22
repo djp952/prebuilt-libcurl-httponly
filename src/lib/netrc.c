@@ -88,7 +88,7 @@ static int parsenetrc(const char *host,
       if(tok && *tok == '#')
         /* treat an initial hash as a comment line */
         continue;
-      while(tok) {
+      while(!done && tok) {
 
         if((login && *login) && (password && *password)) {
           done = TRUE;

@@ -1181,7 +1181,6 @@ struct Adder_args
   struct connectdata *conn;
   CURLcode result;
   int idx;
-  int certs_count;
 };
 
 static bool
@@ -1192,9 +1191,7 @@ add_cert_to_certinfo(const CERT_CONTEXT *ccert_context, void *raw_arg)
   if(valid_cert_encoding(ccert_context)) {
     const char *beg = (const char *) ccert_context->pbCertEncoded;
     const char *end = beg + ccert_context->cbCertEncoded;
-    int insert_index = (args->certs_count - 1) - args->idx;
-    args->result = Curl_extract_certinfo(args->conn, insert_index, beg, end);
-    args->idx++;
+    args->result = Curl_extract_certinfo(args->conn, (args->idx)++, beg, end);
   }
   return args->result == CURLE_OK;
 }
@@ -1329,7 +1326,6 @@ schannel_connect_step3(struct connectdata *conn, int sockindex)
       struct Adder_args args;
       args.conn = conn;
       args.idx = 0;
-      args.certs_count = certs_count;
       traverse_cert_store(ccert_context, add_cert_to_certinfo, &args);
       result = args.result;
     }
@@ -1351,7 +1347,7 @@ schannel_connect_common(struct connectdata *conn, int sockindex,
   struct Curl_easy *data = conn->data;
   struct ssl_connect_data *connssl = &conn->ssl[sockindex];
   curl_socket_t sockfd = conn->sock[sockindex];
-  timediff_t timeout_ms;
+  time_t timeout_ms;
   int what;
 
   /* check if the connection has already been established */
@@ -1398,7 +1394,7 @@ schannel_connect_common(struct connectdata *conn, int sockindex,
         connssl->connecting_state ? sockfd : CURL_SOCKET_BAD;
 
       what = Curl_socket_check(readfd, CURL_SOCKET_BAD, writefd,
-                               nonblocking ? 0 : (time_t)timeout_ms);
+                               nonblocking ? 0 : timeout_ms);
       if(what < 0) {
         /* fatal error */
         failf(data, "select/poll on SSL/TLS socket, errno: %d", SOCKERRNO);
@@ -1548,7 +1544,7 @@ schannel_send(struct connectdata *conn, int sockindex,
     /* send entire message or fail */
     while(len > (size_t)written) {
       ssize_t this_write;
-      timediff_t timeleft;
+      time_t timeleft;
       int what;
 
       this_write = 0;

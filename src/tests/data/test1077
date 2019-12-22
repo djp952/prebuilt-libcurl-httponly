@@ -44,7 +44,6 @@ http
 </server>
 <features>
 ftp
-proxy
 </features>
  <name>
 FTP over HTTP proxy with downgrade to HTTP 1.0

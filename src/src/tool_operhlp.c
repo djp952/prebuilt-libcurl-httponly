@@ -37,20 +37,18 @@
 
 void clean_getout(struct OperationConfig *config)
 {
-  if(config) {
-    struct getout *next;
-    struct getout *node = config->url_list;
+  struct getout *next;
+  struct getout *node = config->url_list;
 
-    while(node) {
-      next = node->next;
-      Curl_safefree(node->url);
-      Curl_safefree(node->outfile);
-      Curl_safefree(node->infile);
-      Curl_safefree(node);
-      node = next;
-    }
-    config->url_list = NULL;
+  while(node) {
+    next = node->next;
+    Curl_safefree(node->url);
+    Curl_safefree(node->outfile);
+    Curl_safefree(node->infile);
+    Curl_safefree(node);
+    node = next;
   }
+  config->url_list = NULL;
 }
 
 bool output_expected(const char *url, const char *uploadfile)

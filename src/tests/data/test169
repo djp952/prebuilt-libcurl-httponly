@@ -79,7 +79,6 @@ http
 NTLM
 !SSPI
 debug
-proxy
 </features>
  <name>
 HTTP with proxy-requiring-NTLM to site-requiring-Digest

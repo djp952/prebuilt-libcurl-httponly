@@ -33,7 +33,6 @@ http
 </server>
 <features>
 ftp
-proxy
 </features>
 <tool>
 lib549

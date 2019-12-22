@@ -100,20 +100,16 @@ static int parsedate(const char *date, time_t *output);
 #define PARSEDATE_LATER  1
 #define PARSEDATE_SOONER 2
 
-#if !defined(CURL_DISABLE_PARSEDATE) || !defined(CURL_DISABLE_FTP) || \
-  !defined(CURL_DISABLE_FILE)
-/* These names are also used by FTP and FILE code */
+#ifndef CURL_DISABLE_PARSEDATE
+
 const char * const Curl_wkday[] =
 {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-const char * const Curl_month[]=
-{ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-#endif
-
-#ifndef CURL_DISABLE_PARSEDATE
 static const char * const weekday[] =
 { "Monday", "Tuesday", "Wednesday", "Thursday",
   "Friday", "Saturday", "Sunday" };
+const char * const Curl_month[]=
+{ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 struct tzinfo {
   char name[5];

@@ -26,7 +26,6 @@ Content-Length: 0
 <client>
 <features>
 ftp
-proxy
 </features>
 <server>
 http

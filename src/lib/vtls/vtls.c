@@ -97,8 +97,7 @@ Curl_ssl_config_matches(struct ssl_primary_config* data,
      Curl_safe_strcasecompare(data->random_file, needle->random_file) &&
      Curl_safe_strcasecompare(data->egdsocket, needle->egdsocket) &&
      Curl_safe_strcasecompare(data->cipher_list, needle->cipher_list) &&
-     Curl_safe_strcasecompare(data->cipher_list13, needle->cipher_list13) &&
-     Curl_safe_strcasecompare(data->pinned_key, needle->pinned_key))
+     Curl_safe_strcasecompare(data->cipher_list13, needle->cipher_list13))
     return TRUE;
 
   return FALSE;
@@ -122,7 +121,6 @@ Curl_clone_primary_ssl_config(struct ssl_primary_config *source,
   CLONE_STRING(egdsocket);
   CLONE_STRING(cipher_list);
   CLONE_STRING(cipher_list13);
-  CLONE_STRING(pinned_key);
 
   return TRUE;
 }
@@ -136,7 +134,6 @@ void Curl_free_primary_ssl_config(struct ssl_primary_config* sslc)
   Curl_safefree(sslc->egdsocket);
   Curl_safefree(sslc->cipher_list);
   Curl_safefree(sslc->cipher_list13);
-  Curl_safefree(sslc->pinned_key);
 }
 
 #ifdef USE_SSL

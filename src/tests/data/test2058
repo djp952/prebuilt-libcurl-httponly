@@ -66,7 +66,6 @@ http
 <features>
 !SSPI
 crypto
-proxy
 </features>
  <name>
 HTTP POST --digest with PUT, resumed upload, modified method and SHA-256

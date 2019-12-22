@@ -36,9 +36,6 @@ CURLOPT_CURLU without the path set - over proxy
  <command>
 http://%HOSTIP:%HTTPPORT
 </command>
-<features>
-proxy
-</features>
 </client>
 
 <verify>

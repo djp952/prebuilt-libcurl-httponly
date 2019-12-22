@@ -97,14 +97,13 @@ DPAGES =					\
   no-buffer.d					\
   no-keepalive.d				\
   no-npn.d					\
-  no-progress-meter.d                           \
   no-sessionid.d				\
   noproxy.d					\
   ntlm.d ntlm-wb.d				\
   oauth2-bearer.d				\
   output.d                                      \
-  parallel.d                                    \
   pass.d                			\
+  parallel.d                                    \
   parallel-max.d                                \
   path-as-is.d					\
   pinnedpubkey.d				\

@@ -18,7 +18,6 @@ none
 </server>
 <features>
 http
-proxy
 </features>
  <name>
 try using proxy with unsupported scheme

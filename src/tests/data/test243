@@ -75,7 +75,6 @@ http
 NTLM
 !SSPI
 debug
-proxy
 </features>
  <name>
 HTTP POST with --proxy-anyauth, picking NTLM

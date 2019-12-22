@@ -26,7 +26,6 @@ This is not the real page either!
 # Client-side
 <client>
 <features>
-proxy
 </features>
 <server>
 http

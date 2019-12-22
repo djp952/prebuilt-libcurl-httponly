@@ -30,7 +30,6 @@ http
 </server>
 <features>
 ftp
-proxy
 </features>
  <name>
 FTP with type=i over HTTP proxy

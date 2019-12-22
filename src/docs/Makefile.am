@@ -53,7 +53,6 @@ EXTRA_DIST =                                    \
  CODE_STYLE.md                                  \
  CONTRIBUTE.md                                  \
  DEPRECATE.md                                   \
- ESNI.md                                        \
  EXPERIMENTAL.md                                \
  FAQ                                            \
  FEATURES                                       \

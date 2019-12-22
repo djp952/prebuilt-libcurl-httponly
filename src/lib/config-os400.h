@@ -160,6 +160,9 @@
 /* Define if you have the <krb.h> header file. */
 #undef HAVE_KRB_H
 
+/* Define if you have the `crypto' library (-lcrypto). */
+#undef HAVE_LIBCRYPTO
+
 /* Define if you have the `nsl' library (-lnsl). */
 #undef HAVE_LIBNSL
 
@@ -171,6 +174,9 @@
 
 /* Define if you have the `socket' library (-lsocket). */
 #undef HAVE_LIBSOCKET
+
+/* Define if you have the `ssl' library (-lssl). */
+#undef HAVE_LIBSSL
 
 /* Define if you have GSS API. */
 #define HAVE_GSSAPI

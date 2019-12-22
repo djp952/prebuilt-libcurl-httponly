@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2019, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -68,7 +68,7 @@ struct timetest {
   int timeout_ms;
   int connecttimeout_ms;
   bool connecting;
-  timediff_t result;
+  time_t result;
   const char *comment;
 };
 
@@ -138,7 +138,7 @@ UNITTEST_START
   data->progress.t_startop.tv_usec = 0;
 
   for(i = 0; i < sizeof(run)/sizeof(run[0]); i++) {
-    timediff_t timeout;
+    time_t timeout;
     NOW(run[i].now_s, run[i].now_us);
     TIMEOUTS(run[i].timeout_ms, run[i].connecttimeout_ms);
     timeout =  Curl_timeleft(data, &now, run[i].connecting);

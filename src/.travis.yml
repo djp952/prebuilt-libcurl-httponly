@@ -86,29 +86,20 @@ matrix:
         - os: linux
           compiler: gcc
           dist: xenial
-          before_install:
-              # Install and use the current stable release of Go
-              - gimme --list
-              - eval "$(gimme stable)"
-              - gimme --list
           env:
               - T=novalgrind BORINGSSL=yes C="--with-ssl=$HOME/boringssl" LD_LIBRARY_PATH=/home/travis/boringssl/lib:/usr/local/lib
               - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
           addons:
               apt:
                   sources:
-                      - ppa:longsleep/golang-backports
                       - *common_sources
                   packages:
                       - *common_packages
+                      - libpsl-dev
+                      - libbrotli-dev
         - os: linux
           compiler: gcc
           dist: xenial
-          before_install:
-              # Install and use the current stable release of Go
-              - gimme --list
-              - eval "$(gimme stable)"
-              - gimme --list
           env:
               - T=novalgrind BORINGSSL=yes QUICHE="yes" C="--with-ssl=$HOME/boringssl --with-quiche=$HOME/quiche/target/release --enable-alt-svc" LD_LIBRARY_PATH=/home/travis/boringssl/lib:$HOME/quiche/target/release:/usr/local/lib
               - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
@@ -120,20 +111,20 @@ matrix:
                       - *common_packages
                       - libpsl-dev
                       - libbrotli-dev
-        - os: linux
-          compiler: gcc
-          dist: xenial
-          env:
-              - T=novalgrind NGTCP2=yes C="--with-ssl=$HOME/ngbuild --with-ngtcp2=$HOME/ngbuild --with-nghttp3=$HOME/ngbuild --enable-alt-svc" NOTESTS=
-              - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
-          addons:
-              apt:
-                  sources:
-                      - *common_sources
-                  packages:
-                      - *common_packages
-                      - libpsl-dev
-                      - libbrotli-dev
+        #- os: linux
+        #  compiler: gcc
+        #  dist: xenial
+        #  env:
+        #      - T=novalgrind NGTCP2=yes C="--with-ssl=$HOME/ngbuild --with-ngtcp2=$HOME/ngbuild --with-nghttp3=$HOME/ngbuild --enable-alt-svc" NOTESTS=
+        #      - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
+        #  addons:
+        #      apt:
+        #          sources:
+        #              - *common_sources
+        #          packages:
+        #              - *common_packages
+        #              - libpsl-dev
+        #              - libbrotli-dev
         - os: linux
           compiler: gcc
           dist: xenial
@@ -417,26 +408,6 @@ matrix:
                       - clang-7
                       - libpsl-dev
                       - libbrotli-dev
-        - os: linux
-          arch: arm64
-          compiler: gcc
-          dist: xenial
-          env:
-              - T=debug C="--enable-alt-svc"
-              - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
-          addons:
-              apt:
-                  sources:
-                      - *common_sources
-                  packages:
-                      - *common_packages
-                      - libpsl-dev
-                      - libbrotli-dev
-                      - libev-dev
-                      - libssl-dev
-                      - libtool
-                      - pkg-config
-                      - zlib1g-dev
 
 before_install:
     - eval "${OVERRIDE_CC}"
@@ -453,7 +424,7 @@ before_script:
     - |
       if [ "$NGTCP2" = yes ]; then
        (cd $HOME &&
-       git clone --depth 1 -b openssl-quic-draft-23 https://github.com/tatsuhiro-t/openssl possl &&
+       git clone --depth 1 -b openssl-quic-draft-22 https://github.com/tatsuhiro-t/openssl possl &&
        cd possl &&
        ./config enable-tls1_3 --prefix=$HOME/ngbuild &&
        make && make install_sw &&
@@ -466,7 +437,7 @@ before_script:
        make && make install &&
 
        cd .. &&
-       git clone --depth 1 https://github.com/ngtcp2/ngtcp2 &&
+       git clone --depth 1 -b draft-22 https://github.com/ngtcp2/ngtcp2 &&
        cd ngtcp2 &&
        autoreconf -i &&
        ./configure PKG_CONFIG_PATH=$HOME/ngbuild/lib/pkgconfig LDFLAGS="-Wl,-rpath,$HOME/ngbuild/lib" --prefix=$HOME/ngbuild &&
@@ -566,12 +537,7 @@ script:
              ./configure --enable-debug --enable-werror $C
              make && make examples
              if [ -z $NOTESTS ]; then
-                if [ "$TRAVIS_ARCH" = "aarch64" ] ; then
-                    # TODO: find out why this test is failing on arm64
-                    make "TFLAGS=-n !323" test-nonflaky
-                else
-                    make TFLAGS=-n test-nonflaky
-                fi
+                make TFLAGS=-n test-nonflaky
              fi
         fi
     - |

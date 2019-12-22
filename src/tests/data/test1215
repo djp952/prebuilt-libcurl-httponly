@@ -60,7 +60,6 @@ Finally, this is the real page!
 NTLM
 !SSPI
 debug
-proxy
 </features>
 <server>
 http

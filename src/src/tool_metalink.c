@@ -965,7 +965,7 @@ static void delete_metalink_resource(metalink_resource *res)
   Curl_safefree(res);
 }
 
-void delete_metalinkfile(metalinkfile *mlfile)
+static void delete_metalinkfile(metalinkfile *mlfile)
 {
   metalink_resource *res;
   if(mlfile == NULL) {
@@ -984,14 +984,12 @@ void delete_metalinkfile(metalinkfile *mlfile)
 
 void clean_metalink(struct OperationConfig *config)
 {
-  if(config) {
-    while(config->metalinkfile_list) {
-      metalinkfile *mlfile = config->metalinkfile_list;
-      config->metalinkfile_list = config->metalinkfile_list->next;
-      delete_metalinkfile(mlfile);
-    }
-    config->metalinkfile_last = 0;
+  while(config->metalinkfile_list) {
+    metalinkfile *mlfile = config->metalinkfile_list;
+    config->metalinkfile_list = config->metalinkfile_list->next;
+    delete_metalinkfile(mlfile);
   }
+  config->metalinkfile_last = 0;
 }
 
 void metalink_cleanup(void)

@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 #include "curl_setup.h"
-#include "socketpair.h"
 
 /***********************************************************************
  * Only for threaded name resolves builds
@@ -75,7 +74,6 @@
 #include "inet_ntop.h"
 #include "curl_threads.h"
 #include "connect.h"
-#include "socketpair.h"
 /* The last 3 #include files should be in this order */
 #include "curl_printf.h"
 #include "curl_memory.h"
@@ -165,7 +163,7 @@ struct thread_sync_data {
   char *hostname;        /* hostname to resolve, Curl_async.hostname
                             duplicate */
   int port;
-#ifdef USE_SOCKETPAIR
+#ifdef HAVE_SOCKETPAIR
   struct connectdata *conn;
   curl_socket_t sock_pair[2]; /* socket pair */
 #endif
@@ -203,7 +201,7 @@ void destroy_thread_sync_data(struct thread_sync_data * tsd)
   if(tsd->res)
     Curl_freeaddrinfo(tsd->res);
 
-#ifdef USE_SOCKETPAIR
+#ifdef HAVE_SOCKETPAIR
   /*
    * close one end of the socket pair (may be done in resolver thread);
    * the other end (for reading) is always closed in the parent thread.
@@ -245,9 +243,9 @@ int init_thread_sync_data(struct thread_data * td,
 
   Curl_mutex_init(tsd->mtx);
 
-#ifdef USE_SOCKETPAIR
-  /* create socket pair, avoid AF_LOCAL since it doesn't build on Solaris */
-  if(Curl_socketpair(AF_UNIX, SOCK_STREAM, 0, &tsd->sock_pair[0]) < 0) {
+#ifdef HAVE_SOCKETPAIR
+  /* create socket pair */
+  if(socketpair(AF_LOCAL, SOCK_STREAM, 0, &tsd->sock_pair[0]) < 0) {
     tsd->sock_pair[0] = CURL_SOCKET_BAD;
     tsd->sock_pair[1] = CURL_SOCKET_BAD;
     goto err_exit;
@@ -299,7 +297,7 @@ static unsigned int CURL_STDCALL getaddrinfo_thread(void *arg)
   struct thread_data *td = tsd->td;
   char service[12];
   int rc;
-#ifdef USE_SOCKETPAIR
+#ifdef HAVE_SOCKETPAIR
   char buf[1];
 #endif
 
@@ -324,11 +322,11 @@ static unsigned int CURL_STDCALL getaddrinfo_thread(void *arg)
     free(td);
   }
   else {
-#ifdef USE_SOCKETPAIR
+#ifdef HAVE_SOCKETPAIR
     if(tsd->sock_pair[1] != CURL_SOCKET_BAD) {
       /* DNS has been resolved, signal client task */
       buf[0] = 1;
-      if(swrite(tsd->sock_pair[1],  buf, sizeof(buf)) < 0) {
+      if(write(tsd->sock_pair[1],  buf, sizeof(buf)) < 0) {
         /* update sock_erro to errno */
         tsd->sock_error = SOCKERRNO;
       }
@@ -384,7 +382,7 @@ static void destroy_async_data(struct Curl_async *async)
   if(async->os_specific) {
     struct thread_data *td = (struct thread_data*) async->os_specific;
     int done;
-#ifdef USE_SOCKETPAIR
+#ifdef HAVE_SOCKETPAIR
     curl_socket_t sock_rd = td->tsd.sock_pair[0];
     struct connectdata *conn = td->tsd.conn;
 #endif
@@ -409,7 +407,7 @@ static void destroy_async_data(struct Curl_async *async)
 
       free(async->os_specific);
     }
-#ifdef USE_SOCKETPAIR
+#ifdef HAVE_SOCKETPAIR
     /*
      * ensure CURLMOPT_SOCKETFUNCTION fires CURL_POLL_REMOVE
      * before the FD is invalidated to avoid EBADF on EPOLL_CTL_DEL
@@ -649,13 +647,13 @@ int Curl_resolver_getsock(struct connectdata *conn,
   timediff_t ms;
   struct Curl_easy *data = conn->data;
   struct resdata *reslv = (struct resdata *)data->state.resolver;
-#ifdef USE_SOCKETPAIR
+#ifdef HAVE_SOCKETPAIR
   struct thread_data *td = (struct thread_data*)conn->async.os_specific;
 #else
   (void)socks;
 #endif
 
-#ifdef USE_SOCKETPAIR
+#ifdef HAVE_SOCKETPAIR
   if(td) {
     /* return read fd to client for polling the DNS resolution status */
     socks[0] = td->tsd.sock_pair[0];
@@ -675,7 +673,7 @@ int Curl_resolver_getsock(struct connectdata *conn,
     else
       milli = 200;
     Curl_expire(data, milli, EXPIRE_ASYNC_NAME);
-#ifdef USE_SOCKETPAIR
+#ifdef HAVE_SOCKETPAIR
   }
 #endif
 

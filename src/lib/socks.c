@@ -38,9 +38,7 @@
 #include "timeval.h"
 #include "socks.h"
 
-/* The last 3 #include files should be in this order */
-#include "curl_printf.h"
-#include "curl_memory.h"
+/* The last #include file should be: */
 #include "memdebug.h"
 
 /*
@@ -374,9 +372,8 @@ CURLcode Curl_SOCKS5(const char *proxy_user,
     o  REP    Reply field:
     o  X'00' succeeded
   */
-#define REQUEST_BUFSIZE 600  /* room for large user/pw (255 max each) */
-  unsigned char socksreq[REQUEST_BUFSIZE];
-  char dest[REQUEST_BUFSIZE] = "unknown";  /* printable hostname:port */
+
+  unsigned char socksreq[600]; /* room for large user/pw (255 max each) */
   int idx;
   ssize_t actualread;
   ssize_t written;
@@ -608,8 +605,6 @@ CURLcode Curl_SOCKS5(const char *proxy_user,
     socksreq[len++] = (char) hostname_len; /* address length */
     memcpy(&socksreq[len], hostname, hostname_len); /* address str w/o NULL */
     len += hostname_len;
-    msnprintf(dest, sizeof(dest), "%s:%d", hostname, remote_port);
-    infof(data, "SOCKS5 connect to %s (remotely resolved)\n", dest);
   }
   else {
     struct Curl_dns_entry *dns;
@@ -633,13 +628,8 @@ CURLcode Curl_SOCKS5(const char *proxy_user,
     if(dns)
       hp = dns->addr;
     if(hp) {
-      if(Curl_printable_address(hp, dest, sizeof(dest))) {
-        size_t destlen = strlen(dest);
-        msnprintf(dest + destlen, sizeof(dest) - destlen, ":%d", remote_port);
-      }
-      else {
-        strcpy(dest, "unknown");
-      }
+      char buf[64];
+      Curl_printable_address(hp, buf, sizeof(buf));
 
       if(hp->ai_family == AF_INET) {
         int i;
@@ -651,7 +641,7 @@ CURLcode Curl_SOCKS5(const char *proxy_user,
           socksreq[len++] = ((unsigned char *)&saddr_in->sin_addr.s_addr)[i];
         }
 
-        infof(data, "SOCKS5 connect to IPv4 %s (locally resolved)\n", dest);
+        infof(data, "SOCKS5 connect to IPv4 %s (locally resolved)\n", buf);
       }
 #ifdef ENABLE_IPV6
       else if(hp->ai_family == AF_INET6) {
@@ -665,13 +655,13 @@ CURLcode Curl_SOCKS5(const char *proxy_user,
             ((unsigned char *)&saddr_in6->sin6_addr.s6_addr)[i];
         }
 
-        infof(data, "SOCKS5 connect to IPv6 %s (locally resolved)\n", dest);
+        infof(data, "SOCKS5 connect to IPv6 %s (locally resolved)\n", buf);
       }
 #endif
       else {
         hp = NULL; /* fail! */
 
-        failf(data, "SOCKS5 connection to %s not supported\n", dest);
+        failf(data, "SOCKS5 connection to %s not supported\n", buf);
       }
 
       Curl_resolv_unlock(data, dns); /* not used anymore from now on */
@@ -766,8 +756,42 @@ CURLcode Curl_SOCKS5(const char *proxy_user,
 #endif
 
   if(socksreq[1] != 0) { /* Anything besides 0 is an error */
-    failf(data, "Can't complete SOCKS5 connection to %s. (%d)",
-          dest, (unsigned char)socksreq[1]);
+    if(socksreq[3] == 1) {
+      failf(data,
+            "Can't complete SOCKS5 connection to %d.%d.%d.%d:%d. (%d)",
+            (unsigned char)socksreq[4], (unsigned char)socksreq[5],
+            (unsigned char)socksreq[6], (unsigned char)socksreq[7],
+            (((unsigned char)socksreq[8] << 8) |
+             (unsigned char)socksreq[9]),
+            (unsigned char)socksreq[1]);
+    }
+    else if(socksreq[3] == 3) {
+      unsigned char port_upper = (unsigned char)socksreq[len - 2];
+      socksreq[len - 2] = 0;
+      failf(data,
+            "Can't complete SOCKS5 connection to %s:%d. (%d)",
+            (char *)&socksreq[5],
+            ((port_upper << 8) |
+             (unsigned char)socksreq[len - 1]),
+            (unsigned char)socksreq[1]);
+      socksreq[len - 2] = port_upper;
+    }
+    else if(socksreq[3] == 4) {
+      failf(data,
+            "Can't complete SOCKS5 connection to %02x%02x:%02x%02x:"
+            "%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%d. (%d)",
+            (unsigned char)socksreq[4], (unsigned char)socksreq[5],
+            (unsigned char)socksreq[6], (unsigned char)socksreq[7],
+            (unsigned char)socksreq[8], (unsigned char)socksreq[9],
+            (unsigned char)socksreq[10], (unsigned char)socksreq[11],
+            (unsigned char)socksreq[12], (unsigned char)socksreq[13],
+            (unsigned char)socksreq[14], (unsigned char)socksreq[15],
+            (unsigned char)socksreq[16], (unsigned char)socksreq[17],
+            (unsigned char)socksreq[18], (unsigned char)socksreq[19],
+            (((unsigned char)socksreq[20] << 8) |
+             (unsigned char)socksreq[21]),
+            (unsigned char)socksreq[1]);
+    }
     return CURLE_COULDNT_CONNECT;
   }
   infof(data, "SOCKS5 request granted.\n");

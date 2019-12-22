@@ -24,14 +24,11 @@
 from __future__ import (absolute_import, division, print_function)
 # unicode_literals)
 import argparse
+import ConfigParser
 import os
 import sys
 import logging
 import tempfile
-try: # Python 3
-    import configparser
-except ImportError: # Python 2
-    import ConfigParser as configparser
 
 # Import our curl test data helper
 import curl_test_data
@@ -61,7 +58,7 @@ def smbserver(options):
             f.write("{0}".format(pid))
 
     # Here we write a mini config for the server
-    smb_config = configparser.ConfigParser()
+    smb_config = ConfigParser.ConfigParser()
     smb_config.add_section("global")
     smb_config.set("global", "server_name", "SERVICE")
     smb_config.set("global", "server_os", "UNIX")
