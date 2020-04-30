@@ -1,8 +1,29 @@
+#***************************************************************************
+#                                  _   _ ____  _
+#  Project                     ___| | | |  _ \| |
+#                             / __| | | | |_) | |
+#                            | (__| |_| |  _ <| |___
+#                             \___|\___/|_| \_\_____|
+#
+# Copyright (C) 1998 - 2020, Daniel Stenberg, <daniel@haxx.se>, et al.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at https://curl.haxx.se/docs/copyright.html.
+#
+# You may opt to use, copy, modify, merge, publish, distribute and/or sell
+# copies of the Software, and permit persons to whom the Software is
+# furnished to do so, under the terms of the COPYING file.
+#
+# This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
+# KIND, either express or implied.
+#
+###########################################################################
 language: c
 sudo: required
 cache:
     directories:
-        - $HOME/wolfssl-4.0.0-stable
+        - $HOME/wolfssl-4.4.0-stable
         - $HOME/mesalink-1.0.0
         - $HOME/nghttp2-1.39.2
 
@@ -27,6 +48,7 @@ addons:
             - stunnel4
             - libidn2-0-dev
             - gnutls-bin
+            - python-impacket
 
 matrix:
     include:
@@ -63,6 +85,11 @@ matrix:
           env:
               - T=normal C="--enable-ares"
               - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
+        - os: linux
+          compiler: gcc
+          dist: trusty
+          env:
+              - T=normal C="--enable-mqtt"
         - os: linux
           compiler: gcc
           dist: bionic
@@ -128,6 +155,30 @@ matrix:
                       - *common_packages
                       - libpsl-dev
                       - libbrotli-dev
+        - os: linux
+          compiler: gcc
+          dist: xenial
+          env:
+              - T=novalgrind NGTCP2=yes GNUTLS=yes C="PKG_CONFIG_PATH=$HOME/ngbuild --without-ssl --with-gnutls=$HOME/ngbuild --with-ngtcp2=$HOME/ngbuild --with-nghttp3=$HOME/ngbuild --enable-alt-svc" NOTESTS=
+              - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
+          addons:
+              apt:
+                  sources:
+                      - *common_sources
+                  packages:
+                      - *common_packages
+                      - libpsl-dev
+                      - libbrotli-dev
+                      - autogen
+                      - automake
+                      - autopoint
+                      - bison
+                      - gperf
+                      - libgmp-dev
+                      - libopts25-dev
+                      - libp11-kit-dev
+                      - libtasn1-6-dev
+                      - nettle-dev
         - os: linux
           compiler: gcc
           dist: bionic
@@ -245,28 +296,6 @@ matrix:
           env:
               - T=iconv
               - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
-        - os: osx
-          compiler: gcc
-          env: T=debug C="--disable-dict --disable-file --disable-ftp --disable-gopher --disable-imap --disable-ldap --disable-pop3 --disable-rtmp --disable-rtsp --disable-scp --disable-sftp --disable-smb --disable-smtp --disable-telnet --disable-tftp --disable-unix-sockets --disable-shared --enable-debug --enable-maintainer-mode --without-brotli --without-gssapi --without-libidn2 --without-libmetalink --without-libpsl --without-librtmp --without-libssh2 --without-nghttp2 --without-ntlm-auth --without-ssl --without-zlib"
-        - os: osx
-          compiler: gcc
-          env: T=debug C=--enable-ares
-        - os: osx
-          compiler: gcc
-          env: T=debug C="--with-ssl=/usr/local/opt/openssl --with-libmetalink"
-        - os: osx
-          compiler: gcc
-          env: T=debug C="--with-ssl=/usr/local/opt/libressl --with-libmetalink"
-        - os: osx
-          compiler: clang
-          osx_image: xcode10
-          env: T=debug C="--without-ssl --with-darwinssl --with-libmetalink"
-        - os: osx
-          compiler: clang
-          env: T=normal
-        - os: osx
-          compiler: clang
-          env: T=cmake
         - os: linux
           compiler: gcc
           dist: bionic
@@ -419,9 +448,6 @@ before_install:
 
 install:
   - if [ "$T" = "coverage" ]; then pip2 install --user cpp-coveralls; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update > /dev/null; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew reinstall libtool > /dev/null; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install rtmpdump libssh2 c-ares libmetalink libressl nghttp2 libmetalink; fi
 
 # before_script and script:
 # Travis isn't reliable catching errors in inline script commands (#3730).
