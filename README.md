@@ -1,4 +1,4 @@
-# LIBCURL 7.70.0 (HTTP Only)
+# LIBCURL 7.71.0 (HTTP Only)
 [https://github.com/curl/curl](https://github.com/curl/curl)   
   
 **TARGETS**   
@@ -52,7 +52,7 @@ UNATTENDED=1 osxcross/build.sh
 **BUILD LIBCURL (linux-i686)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export CC=gcc-4.9
 export AR=gcc-ar-4.9
@@ -72,7 +72,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (linux-x86_64)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export CC=gcc-4.9
 export AR=gcc-ar-4.9
@@ -92,7 +92,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (linux-armel)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export CC=arm-linux-gnueabi-gcc-4.9
 export AR=arm-linux-gnueabi-gcc-ar-4.9
@@ -111,7 +111,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (linux-armhf)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export CC=arm-linux-gnueabihf-gcc-4.9
 export AR=arm-linux-gnueabihf-gcc-ar-4.9
@@ -130,7 +130,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (linux-aarch64)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export CC=aarch64-linux-gnu-gcc-4.9
 export AR=aarch64-linux-gnu-gcc-ar-4.9
@@ -149,7 +149,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-21-armeabi-v7a)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
 export AR=$TOOLCHAIN/bin/arm-linux-androideabi-ar
@@ -173,7 +173,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-21-arm64-v8a)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
 export AR=$TOOLCHAIN/bin/aarch64-linux-android-ar
@@ -197,7 +197,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-21-x86)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
 export AR=$TOOLCHAIN/bin/i686-linux-android-ar
@@ -221,7 +221,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-28-armeabi-v7a)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
 export AR=$TOOLCHAIN/bin/arm-linux-androideabi-ar
@@ -245,7 +245,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-28-arm64-v8a)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
 export AR=$TOOLCHAIN/bin/aarch64-linux-android-ar
@@ -269,7 +269,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (android-28-x86)**
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
 export AR=$TOOLCHAIN/bin/i686-linux-android-ar
@@ -294,7 +294,7 @@ Get libcurl.a from lib/.libs
 Open "Ubuntu"   
 ```
 git clone https://github.com/raspberrypi/tools.git raspberrypi --depth=1
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export PATH=$(pwd)/raspberrypi/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin:$PATH
 export CC=arm-linux-gnueabihf-gcc
@@ -314,7 +314,7 @@ Get libcurl.a from lib/.libs
 **BUILD LIBCURL (osx-x86_64)**   
 Open "Ubuntu"   
 ```
-git clone https://github.com/curl/curl.git -b curl-7_70_0 --depth=1
+git clone https://github.com/curl/curl.git -b curl-7_71_0 --depth=1
 git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
 export PATH=$(pwd)/osxcross/target/bin:$PATH
 export CC=x86_64-apple-darwin15-clang

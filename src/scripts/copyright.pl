@@ -28,13 +28,13 @@
 #
 
 # regexes of files to not scan
-my @whitelist=(
+my @skiplist=(
     '^tests\/data\/test(\d+)$', # test case data
     '^docs\/cmdline-opts\/[a-z]+(.*)\.d$', # curl.1 pieces
     '(\/|^)[A-Z0-9_.-]+$', # all uppercase file name, possibly with dot and dash
     '(\/|^)[A-Z0-9_-]+\.md$', # all uppercase file name with .md extension
-    '.gitignore', # whereever they are
-    '.gitattributes', # whereever they are
+    '.gitignore', # wherever they are
+    '.gitattributes', # wherever they are
     '^tests/certs/.*', # generated certs
     '^tests/stunnel.pem', # generated cert
     '^tests/valgrind.supp', # valgrind suppressions
@@ -55,6 +55,7 @@ my @whitelist=(
     'curl_multi_socket_all.3',
     'curl_strnequal.3',
     'symbols-in-versions',
+    'options-in-versions',
 
     # macos-framework files
     '^lib\/libcurl.plist',
@@ -83,6 +84,9 @@ my @whitelist=(
     # macos framework generated files
     '^src\/macos\/curl.mcp.xml.sit.hqx',
     '^src\/macos\/src\/curl_GUSIConfig.cpp',
+
+    # checksrc control files
+    '\.checksrc$',
 
     );
 
@@ -164,10 +168,10 @@ else {
 for my $f (@all) {
     chomp $f;
     my $skipped = 0;
-    for my $skip (@whitelist) {
+    for my $skip (@skiplist) {
         #print "$f matches $skip ?\n";
         if($f =~ /$skip/) {
-            $whitelisted++;
+            $skiplisted++;
             $skipped = 1;
             #print "$f: SKIPPED ($skip)\n";
             last;
@@ -182,6 +186,6 @@ for my $f (@all) {
 
 print STDERR "$missing files have no copyright\n" if($missing);
 print STDERR "$wrong files have wrong copyright year\n" if ($wrong);
-print STDERR "$whitelisted files are whitelisted\n" if ($whitelisted);
+print STDERR "$skiplisted files are skipped\n" if ($skiplisted);
 
 exit 1 if($missing || $wrong);

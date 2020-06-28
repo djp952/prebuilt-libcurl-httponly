@@ -85,8 +85,6 @@ if [ "$T" = "normal" ]; then
     make test-nonflaky
   fi
   if [ -n $CHECKSRC ]; then
-    echo "enable COPYRIGHTYEAR" > ./docs/examples/.checksrc
-    echo "enable COPYRIGHTYEAR" > ./include/curl/.checksrc
     make checksrc
   fi
 fi
@@ -106,13 +104,8 @@ if [ "$T" = "iconv" ]; then
 fi
 
 if [ "$T" = "cmake" ]; then
-  if [ $TRAVIS_OS_NAME = linux ]; then
-    cmake -H. -Bbuild -DCURL_WERROR=ON
-    cmake --build build
-  else
-    cmake -H. -Bbuild -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl -DCURL_DISABLE_LDAP=ON -DCURL_DISABLE_LDAPS=ON
-    cmake --build build
-  fi
+  cmake -H. -Bbuild -DCURL_WERROR=ON $C
+  cmake --build build
 fi
 
 if [ "$T" = "distcheck" ]; then
