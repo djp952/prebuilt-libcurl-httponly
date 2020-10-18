@@ -44,11 +44,11 @@ my @skiplist=(
     '^projects/Windows/.*.vcxproj.filters$', # generated MSVC file
     '^m4/ax_compile_check_sizeof.m4$', # imported, leave be
     '^.mailmap', # git control file
-    '^winbuild/BUILD.WINDOWS.txt$', # instructions
     '\/readme',
     '^.github/', # github instruction files
     '^.dcignore', # deepcode.ai instruction file
     '^.muse/', # muse-CI control files
+    "buildconf", # its nothing to copyright
 
     # docs/ files we're okay with without copyright
     'INSTALL.cmake',
@@ -62,17 +62,6 @@ my @skiplist=(
     # macos-framework files
     '^lib\/libcurl.plist',
     '^lib\/libcurl.vers.in',
-
-    # symbian build files we know little about
-    '^packages\/Symbian\/bwins\/libcurlu.def',
-    '^packages\/Symbian\/eabi\/libcurlu.def',
-    '^packages\/Symbian\/group\/bld.inf',
-    '^packages\/Symbian\/group\/curl.iby',
-    '^packages\/Symbian\/group\/curl.mmp',
-    '^packages\/Symbian\/group\/curl.pkg',
-    '^packages\/Symbian\/group\/libcurl.iby',
-    '^packages\/Symbian\/group\/libcurl.mmp',
-    '^packages\/Symbian\/group\/libcurl.pkg',
 
     # vms files
     '^packages\/vms\/build_vms.com',
