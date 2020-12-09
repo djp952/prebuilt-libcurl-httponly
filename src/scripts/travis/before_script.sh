@@ -10,7 +10,7 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at https://curl.haxx.se/docs/copyright.html.
+# are also available at https://curl.se/docs/copyright.html.
 #
 # You may opt to use, copy, modify, merge, publish, distribute and/or sell
 # copies of the Software, and permit persons to whom the Software is
@@ -35,7 +35,7 @@ if [ "$NGTCP2" = yes ]; then
     make install
 
     cd $HOME
-    git clone --depth 1 -b tmp-quic https://gitlab.com/gnutls/gnutls.git pgtls
+    git clone --depth 1 https://gitlab.com/gnutls/gnutls.git pgtls
     cd pgtls
     ./bootstrap
     ./configure PKG_CONFIG_PATH=$HOME/ngbuild/lib/pkgconfig LDFLAGS="-Wl,-rpath,$HOME/ngbuild/lib" --with-included-libtasn1 --with-included-unistring --disable-guile --disable-doc --prefix=$HOME/ngbuild
@@ -71,21 +71,16 @@ if [ "$TRAVIS_OS_NAME" = linux -a "$BORINGSSL" ]; then
   cd $HOME
   git clone --depth=1 https://boringssl.googlesource.com/boringssl
   cd boringssl
-  mkdir build
-  cd build
-  CXX="g++" CC="gcc" cmake -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=1 ..
-  make
-  cd ..
+  CXX="g++" CC="gcc" cmake -H. -Bbuild -GNinja -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=1
+  cmake --build build
   mkdir lib
-  cd lib
-  cp ../build/crypto/libcrypto.so .
-  cp ../build/ssl/libssl.so .
-  echo "BoringSSL lib dir: "`pwd`
-  cd ../build
-  make clean
-  rm -f CMakeCache.txt
-  CXX="g++" CC="gcc" cmake -DCMAKE_POSITION_INDEPENDENT_CODE=on ..
-  make
+  cp ./build/crypto/libcrypto.so ./lib/
+  cp ./build/ssl/libssl.so ./lib/
+  echo "BoringSSL lib dir: "`pwd`"/lib"
+  cmake --build build --target clean
+  rm -f build/CMakeCache.txt
+  CXX="g++" CC="gcc" cmake -H. -Bbuild -GNinja -DCMAKE_POSITION_INDEPENDENT_CODE=on
+  cmake --build build
   export LIBS=-lpthread
 fi
 
