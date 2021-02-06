@@ -5,7 +5,7 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2020, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 1998 - 2021, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
@@ -114,6 +114,16 @@ jobs:
         - libbrotli-dev
         - libzstd-dev
   - env:
+    - T=debug HYPER="yes" C="--with-hyper=$HOME/hyper" LD_LIBRARY_PATH=$HOME/hyper/target/debug:/usr/local/lib TFLAGS="1 to 29"
+    addons:
+      apt:
+        <<: *common_apt
+        packages:
+        - *common_packages
+        - libpsl-dev
+        - libbrotli-dev
+        - libzstd-dev
+  - env:
     - T=novalgrind LIBRESSL=yes C="--with-ssl=$HOME/libressl" LD_LIBRARY_PATH=/home/travis/libressl/lib:/usr/local/lib
     - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
   - env:
@@ -160,7 +170,7 @@ jobs:
         - libbrotli-dev
         - libzstd-dev
   - env:
-    - T=debug OPENSSL3="yes" C="--with-ssl=$HOME/openssl3" LD_LIBRARY_PATH=/home/travis/openssl3/lib:/usr/local/lib
+    - T=debug OPENSSL3="yes" C="--with-ssl=$HOME/openssl3" LD_LIBRARY_PATH=/home/travis/openssl3/lib:/usr/local/lib TFLAGS="https ftps"
     - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
     addons:
       apt:
@@ -248,7 +258,7 @@ jobs:
     - T=iconv
     - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
   - env:
-    - T=cmake BORINGSSL=yes QUICHE=yes C="-GNinja -DUSE_QUICHE=1 -DOPENSSL_ROOT_DIR=$HOME/boringssl -DCURL_BROTLI=1 -DCURL_ZSTD=1"
+    - T=cmake BORINGSSL=yes QUICHE=yes C="-GNinja -DUSE_QUICHE=1 -DOPENSSL_ROOT_DIR=$HOME/boringssl -DCURL_BROTLI=1 -DCURL_ZSTD=1" TFLAGS="https ftps"
     - OVERRIDE_CC="CC=gcc-8" OVERRIDE_CXX="CXX=g++-8"
     - PKG_CONFIG_PATH="$HOME/quiche/target/release"
     before_install:
