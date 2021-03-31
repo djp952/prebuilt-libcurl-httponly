@@ -38,10 +38,15 @@ fi
 if [ "$T" = "torture" ]; then
   ./configure --enable-debug --disable-shared --disable-threaded-resolver --enable-code-coverage --enable-werror --with-libssh2
   make
-  make TFLAGS=-n test-nonflaky
-  make "TFLAGS=-n -e" test-nonflaky
-  tests="1 200 300 500 700 800 900 1000 1100 1200 1302 1400 1502 3000"
-  make "TFLAGS=-n --shallow=40 -t $tests" test-nonflaky
+  tests="!TLS-SRP !FTP"
+  make "TFLAGS=-n --shallow=20 -t $tests" test-nonflaky
+fi
+
+if [ "$T" = "events" ]; then
+  ./configure --enable-debug --disable-shared --disable-threaded-resolver --enable-code-coverage --enable-werror --with-libssh2
+  make
+  tests="!TLS-SRP"
+  make "TFLAGS=-n -e $tests" test-nonflaky
 fi
 
 if [ "$T" = "debug" ]; then
@@ -63,6 +68,12 @@ if [ "$T" = "debug-mesalink" ]; then
   ./configure --enable-debug --enable-werror $C
   make
   make "TFLAGS=-n !313 !410 !3001" test-nonflaky
+fi
+
+if [ "$T" = "debug-rustls" ]; then
+  ./configure --enable-debug --enable-werror $C
+  make
+  make "TFLAGS=HTTPS !313" test-nonflaky
 fi
 
 if [ "$T" = "novalgrind" ]; then
