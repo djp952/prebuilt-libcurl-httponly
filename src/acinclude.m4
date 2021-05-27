@@ -1410,7 +1410,7 @@ dnl Check for timeval struct
 AC_DEFUN([CURL_CHECK_STRUCT_TIMEVAL], [
   AC_REQUIRE([CURL_CHECK_HEADER_WINSOCK])dnl
   AC_REQUIRE([CURL_CHECK_HEADER_WINSOCK2])dnl
-  AC_CHECK_HEADERS(sys/types.h sys/time.h time.h sys/socket.h)
+  AC_CHECK_HEADERS(sys/types.h sys/time.h sys/socket.h)
   AC_CACHE_CHECK([for struct timeval], [curl_cv_struct_timeval], [
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
@@ -1433,14 +1433,8 @@ AC_DEFUN([CURL_CHECK_STRUCT_TIMEVAL], [
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
-#ifdef TIME_WITH_SYS_TIME
+#endif
 #include <time.h>
-#endif
-#else
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-#endif
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
@@ -1605,7 +1599,7 @@ dnl -------------------------------------------------
 dnl Check if monotonic clock_gettime is available.
 
 AC_DEFUN([CURL_CHECK_FUNC_CLOCK_GETTIME_MONOTONIC], [
-  AC_CHECK_HEADERS(sys/types.h sys/time.h time.h)
+  AC_CHECK_HEADERS(sys/types.h sys/time.h)
   AC_MSG_CHECKING([for monotonic clock_gettime])
   #
   if test "x$dontwant_rt" = "xno" ; then
@@ -1616,14 +1610,8 @@ AC_DEFUN([CURL_CHECK_FUNC_CLOCK_GETTIME_MONOTONIC], [
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
-#ifdef TIME_WITH_SYS_TIME
+#endif
 #include <time.h>
-#endif
-#else
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-#endif
       ]],[[
         struct timespec ts;
         (void)clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -1670,14 +1658,8 @@ AC_DEFUN([CURL_CHECK_LIBS_CLOCK_GETTIME_MONOTONIC], [
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
-#ifdef TIME_WITH_SYS_TIME
+#endif
 #include <time.h>
-#endif
-#else
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-#endif
           ]],[[
             struct timespec ts;
             (void)clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -1725,14 +1707,8 @@ AC_DEFUN([CURL_CHECK_LIBS_CLOCK_GETTIME_MONOTONIC], [
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
-#ifdef TIME_WITH_SYS_TIME
+#endif
 #include <time.h>
-#endif
-#else
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-#endif
         ]],[[
           struct timespec ts;
           if (0 == clock_gettime(CLOCK_MONOTONIC, &ts))
@@ -1902,14 +1878,8 @@ AC_DEFUN([CURL_CHECK_FUNC_SELECT], [
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
-#ifdef TIME_WITH_SYS_TIME
+#endif
 #include <time.h>
-#endif
-#else
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-#endif
 #ifndef HAVE_WINDOWS_H
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
@@ -1967,14 +1937,8 @@ struct Library *SocketBase = NULL;
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
-#ifdef TIME_WITH_SYS_TIME
+#endif
 #include <time.h>
-#endif
-#else
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-#endif
 #ifndef HAVE_WINDOWS_H
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
@@ -2580,14 +2544,13 @@ TEST EINVAL TEST
 ])
 
 
-dnl CURL_MAC_CFLAGS
+dnl CURL_DARWIN_CFLAGS
 dnl
-dnl Check if -mmacosx-version-min, -miphoneos-version-min or any
-dnl similar are set manually, otherwise do. And set
-dnl -Werror=partial-availability.
+dnl Set -Werror=partial-availability to detect possible breaking code
+dnl with very low deployment targets.
 dnl
 
-AC_DEFUN([CURL_MAC_CFLAGS], [
+AC_DEFUN([CURL_DARWIN_CFLAGS], [
 
   tst_cflags="no"
   case $host_os in
@@ -2596,28 +2559,10 @@ AC_DEFUN([CURL_MAC_CFLAGS], [
       ;;
   esac
 
-  AC_MSG_CHECKING([for good-to-use Mac CFLAGS])
+  AC_MSG_CHECKING([for good-to-use Darwin CFLAGS])
   AC_MSG_RESULT([$tst_cflags]);
 
   if test "$tst_cflags" = "yes"; then
-    AC_MSG_CHECKING([for *version-min set by user])
-    min=""
-    if test -n "$IPHONEOS_DEPLOYMENT_TARGET"; then
-      var="IPHONEOS_DEPLOYMENT_TARGET"
-    elif test -n "$MACOSX_DEPLOYMENT_TARGET"; then
-      var="MACOSX_DEPLOYMENT_TARGET"
-    elif test -z "$(echo $CFLAGS $CC | grep m.*os.*-version-min)"; then
-      min="-mmacosx-version-min=10.8"
-      CFLAGS="$CFLAGS $min"
-    else
-      var="CFLAGS or CC"
-    fi
-    if test -z "$min"; then
-      AC_MSG_RESULT([set by user in $var])
-    else
-      AC_MSG_RESULT([$min set])
-    fi
-
     old_CFLAGS=$CFLAGS
     CFLAGS="$CFLAGS -Werror=partial-availability"
     AC_MSG_CHECKING([whether $CC accepts -Werror=partial-availability])
