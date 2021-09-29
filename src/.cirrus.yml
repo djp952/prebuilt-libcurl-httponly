@@ -26,8 +26,9 @@ freebsd_task:
   name: FreeBSD
 
   matrix:
-      # A stable 13.0 image likely won't be available before early 2021
-      # image_family: freebsd-13-0-snap
+    - name: FreeBSD 13.0
+      freebsd_instance:
+        image_family: freebsd-13-0
     - name: FreeBSD 12.2
       freebsd_instance:
         image_family: freebsd-12-2
@@ -49,13 +50,14 @@ freebsd_task:
     - easy_install "impacket"
   configure_script:
     - ./buildconf
-    - case `uname -r` in
-        12.1*)
-        export CC=clang;
-        export CFLAGS="-fsanitize=address,undefined,signed-integer-overflow -fno-sanitize-recover=undefined,integer -Wformat -Werror=format-security -Werror=array-bounds -g";
-        export CXXFLAGS="-fsanitize=address,undefined -fno-sanitize-recover=undefined,integer -Wformat -Werror=format-security -Werror=array-bounds -g";
-        export LDFLAGS="-fsanitize=address,undefined -fno-sanitize-recover=undefined,integer" ;;
-      esac
+    # Building with the address sanitizer is causing unexplainable test issues due to timeouts
+    #- case `uname -r` in
+    #    12.2*)
+    #    export CC=clang;
+    #    export CFLAGS="-fsanitize=address,undefined,signed-integer-overflow -fno-sanitize-recover=undefined,integer -Wformat -Werror=format-security -Werror=array-bounds -g";
+    #    export CXXFLAGS="-fsanitize=address,undefined -fno-sanitize-recover=undefined,integer -Wformat -Werror=format-security -Werror=array-bounds -g";
+    #    export LDFLAGS="-fsanitize=address,undefined -fno-sanitize-recover=undefined,integer" ;;
+    #  esac
     - ./configure --prefix="${HOME}"/install --enable-debug --with-openssl --with-libssh2 --with-brotli --with-gssapi --with-libidn2 --enable-manual --enable-ldap --enable-ldaps --with-librtmp --with-libpsl --with-nghttp2 || { tail -300 config.log; false; }
   compile_script:
     - make V=1 && cd tests && make V=1
@@ -69,7 +71,7 @@ freebsd_task:
     - find . -type d -exec chmod 777 {} \;
     # The OpenSSH server instance for the testsuite cannot be started on FreeBSD,
     # therefore the SFTP and SCP tests are disabled right away from the beginning.
-    - sudo -u nobody make V=1 TFLAGS="-n -a -p !flaky !SFTP !SCP" test-nonflaky
+    - sudo -u nobody make V=1 TFLAGS="-n -a -p -u !flaky !SFTP !SCP" test-nonflaky
   install_script:
     - make V=1 install
 
@@ -82,14 +84,14 @@ windows_task:
   matrix:
     - name: Windows 32-bit shared/release Schannel/SSPI/WinIDN/libssh2
       env:
-        container_img: mback2k/curl-docker-winbuildenv-msys2-mingw32:ltsc2019
+        container_img: ghcr.io/mback2k/curl-docker-winbuildenv/msys2-mingw32:ltsc2019
         container_cmd: C:\msys64\usr\bin\sh
         prepare: pacman -S --needed --noconfirm --noprogressbar libssh2-devel mingw-w64-i686-libssh2
         configure: --host=i686-w64-mingw32 --build=i686-w64-mingw32 --prefix=/mingw32 --enable-werror --enable-sspi --with-schannel --with-winidn --with-libssh2
         tests: ~165 ~310 ~571 ~612 ~1056 ~1299 ~1448 ~2034 ~2037 ~2041 ~2046 ~2047 ~3000 ~3001 !SCP
     - name: Windows 32-bit static/release Schannel/SSPI/WinIDN/libssh2
       env:
-        container_img: mback2k/curl-docker-winbuildenv-msys2-mingw32:ltsc2019
+        container_img: ghcr.io/mback2k/curl-docker-winbuildenv/msys2-mingw32:ltsc2019
         container_cmd: C:\msys64\usr\bin\sh
         prepare: pacman -S --needed --noconfirm --noprogressbar libssh2-devel mingw-w64-i686-libssh2
         configure: --host=i686-w64-mingw32 --build=i686-w64-mingw32 --prefix=/mingw32 --enable-werror --enable-sspi --with-schannel --with-winidn --with-libssh2 --disable-shared --enable-static
@@ -98,14 +100,14 @@ windows_task:
         PKG_CONFIG: pkg-config --static
     - name: Windows 64-bit shared/release Schannel/SSPI/WinIDN/libssh2
       env:
-        container_img: mback2k/curl-docker-winbuildenv-msys2-mingw64:ltsc2019
+        container_img: ghcr.io/mback2k/curl-docker-winbuildenv/msys2-mingw64:ltsc2019
         container_cmd: C:\msys64\usr\bin\sh
         prepare: pacman -S --needed --noconfirm --noprogressbar libssh2-devel mingw-w64-x86_64-libssh2
         configure: --host=x86_64-w64-mingw32 --build=x86_64-w64-mingw32 --prefix=/mingw64 --enable-werror --enable-sspi --with-schannel --with-winidn --with-libssh2
         tests: ~165 ~310 ~571 ~612 ~1056 ~1299 ~1448 ~2034 ~2037 ~2041 ~2046 ~2047 ~3000 ~3001 !SCP
     - name: Windows 64-bit static/release Schannel/SSPI/WinIDN/libssh2
       env:
-        container_img: mback2k/curl-docker-winbuildenv-msys2-mingw64:ltsc2019
+        container_img: ghcr.io/mback2k/curl-docker-winbuildenv/msys2-mingw64:ltsc2019
         container_cmd: C:\msys64\usr\bin\sh
         prepare: pacman -S --needed --noconfirm --noprogressbar libssh2-devel mingw-w64-x86_64-libssh2
         configure: --host=x86_64-w64-mingw32 --build=x86_64-w64-mingw32 --prefix=/mingw64 --enable-werror --enable-sspi --with-schannel --with-winidn --with-libssh2 --disable-shared --enable-static
@@ -116,6 +118,7 @@ windows_task:
   env:
     CIRRUS_CLONE_DEPTH: 10
     MSYS2_PATH_TYPE: inherit
+    MAKEFLAGS: -j 2
 
   prepare_script: |
     %container_cmd% -l -c "cd $(echo '%cd%') && %prepare%"
@@ -126,4 +129,4 @@ windows_task:
   install_script: |
     %container_cmd% -l -c "cd $(echo '%cd%') && make V=1 install && PATH=/usr/bin:/bin find . -type f -path '*/.libs/*.exe' -print -execdir mv -t .. {} \;"
   test_script: |
-    %container_cmd% -l -c "cd $(echo '%cd%') && make V=1 TFLAGS='-r -rm %tests%' test-nonflaky"
+    %container_cmd% -l -c "cd $(echo '%cd%') && make V=1 TFLAGS='-u -r -rm %tests%' test-nonflaky"
