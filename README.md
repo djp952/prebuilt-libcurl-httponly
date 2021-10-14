@@ -10,9 +10,11 @@
 * android-21-armeabi-v7a (ndk-r20b/api-21)   
 * android-21-arm64-v8a (ndk-r20b/api-21)  
 * android-21-x86 (ndk-r20b/api-21)  
+* android-21-x86_64 (ndk-r20b/api-21)  
 * android-28-armeabi-v7a (ndk-r20b/api-28)   
 * android-28-arm64-v8a (ndk-r20b/api-28)  
 * android-28-x86 (ndk-r20b/api-28)  
+* android-28-x86_64 (ndk-r20b/api-28)  
 * raspbian-armhf   
 * osx-x86_64 (apple-darwin15)   
    
@@ -224,6 +226,30 @@ make
 Get header files from include/curl   
 Get libcurl.a from lib/.libs   
    
+**BUILD LIBCURL (android-21-x86_64)**
+* Open "Ubuntu 18.04 LTS"   
+```
+git clone https://github.com/curl/curl.git -b curl-7_79_1 --depth=1
+git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
+export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
+export AR=$TOOLCHAIN/bin/x86_64-linux-android-ar
+export AS=$TOOLCHAIN/bin/x86_64-linux-android-as
+export CC=$TOOLCHAIN/bin/x86_64-linux-android21-clang
+export CXX=$TOOLCHAIN/bin/x86_64-linux-android21-clang++
+export LD=$TOOLCHAIN/bin/x86_64-linux-android-ld
+export RANLIB=$TOOLCHAIN/bin/x86_64-linux-android-ranlib
+export STRIP=$TOOLCHAIN/bin/x86_64-linux-android-strip
+export CPPFLAGS="-I$(pwd)/prebuilt-libz/android-21-x86_64/include"
+export LDFLAGS="-L$(pwd)/prebuilt-libz/android-21-x86_64/lib" 
+export LIBS=-ldl
+cd curl
+autoreconf -fi
+./configure --with-pic --without-ssl --with-zlib --host=x86_64-linux-android --target=x86_64-linux-android --disable-shared --disable-dict --disable-ftp --disable-file --disable-gopher --disable-imap --disable-ldap --disable-ldaps --disable-mqtt --disable-pop3 --disable-rtsp --disable-smb --disable-smtp --disable-telnet --disable-tftp
+make
+```
+Get header files from include/curl   
+Get libcurl.a from lib/.libs   
+   
 **BUILD LIBCURL (android-28-armeabi-v7a)**
 * Open "Ubuntu 18.04 LTS"   
 ```
@@ -296,8 +322,32 @@ make
 Get header files from include/curl   
 Get libcurl.a from lib/.libs   
    
+**BUILD LIBCURL (android-28-x86_64)**
+* Open "Ubuntu 18.04 LTS"   
+```
+git clone https://github.com/curl/curl.git -b curl-7_79_1 --depth=1
+git clone https://github.com/djp952/prebuilt-libz.git -b libz-1.2.11 --depth=1
+export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
+export AR=$TOOLCHAIN/bin/x86_64-linux-android-ar
+export AS=$TOOLCHAIN/bin/x86_64-linux-android-as
+export CC=$TOOLCHAIN/bin/x86_64-linux-android28-clang
+export CXX=$TOOLCHAIN/bin/x86_64-linux-android28-clang++
+export LD=$TOOLCHAIN/bin/x86_64-linux-android-ld
+export RANLIB=$TOOLCHAIN/bin/x86_64-linux-android-ranlib
+export STRIP=$TOOLCHAIN/bin/x86_64-linux-android-strip
+export CPPFLAGS="-I$(pwd)/prebuilt-libz/android-28-x86_64/include"
+export LDFLAGS="-L$(pwd)/prebuilt-libz/android-28-x86_64/lib" 
+export LIBS=-ldl
+cd curl
+autoreconf -fi
+./configure --with-pic --without-ssl --with-zlib --host=x86_64-linux-android --target=x86_64-linux-android --disable-shared --disable-dict --disable-ftp --disable-file --disable-gopher --disable-imap --disable-ldap --disable-ldaps --disable-mqtt --disable-pop3 --disable-rtsp --disable-smb --disable-smtp --disable-telnet --disable-tftp
+make
+```
+Get header files from include/curl   
+Get libcurl.a from lib/.libs   
+   
 **BUILD LIBCURL (raspbian-armhf)**   
-Open "Ubuntu"   
+Open "Ubuntu 18.04 LTS"   
 ```
 git clone https://github.com/raspberrypi/tools.git raspberrypi --depth=1
 git clone https://github.com/curl/curl.git -b curl-7_79_1 --depth=1
