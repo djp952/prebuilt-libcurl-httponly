@@ -6,7 +6,7 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2021, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 1998 - 2022, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
@@ -96,14 +96,6 @@ if [ "$TRAVIS_OS_NAME" = linux -a "$OPENSSL3" ]; then
   make install_sw
 fi
 
-if [ "$TRAVIS_OS_NAME" = linux -a "$MBEDTLS3" ]; then
-  cd $HOME
-  git clone --depth=1 -b v3.0.0 https://github.com/ARMmbed/mbedtls
-  cd mbedtls
-  make
-  make DESTDIR=$HOME/mbedtls3 install
-fi
-
 if [ "$TRAVIS_OS_NAME" = linux -a "$LIBRESSL" ]; then
   cd $HOME
   git clone --depth=1 -b v3.1.4 https://github.com/libressl-portable/portable.git libressl-git
@@ -120,9 +112,14 @@ if [ "$TRAVIS_OS_NAME" = linux -a "$QUICHE" ]; then
   curl https://sh.rustup.rs -sSf | sh -s -- -y
   source $HOME/.cargo/env
   cd $HOME/quiche
-  cargo build -v --release --features ffi,pkg-config-meta,qlog
-  mkdir -v deps/boringssl/src/lib
-  ln -vnf $(find target/release -name libcrypto.a -o -name libssl.a) deps/boringssl/src/lib/
+
+  #### Work-around https://github.com/curl/curl/issues/7927 #######
+  #### See https://github.com/alexcrichton/cmake-rs/issues/131 ####
+  sed -i -e 's/cmake = "0.1"/cmake = "=0.1.45"/' quiche/Cargo.toml
+
+  cargo build -v --package quiche --release --features ffi,pkg-config-meta,qlog
+  mkdir -v quiche/deps/boringssl/src/lib
+  ln -vnf $(find target/release -name libcrypto.a -o -name libssl.a) quiche/deps/boringssl/src/lib/
 fi
 
 if [ "$TRAVIS_OS_NAME" = linux -a "$RUSTLS_VERSION" ]; then
@@ -133,23 +130,7 @@ if [ "$TRAVIS_OS_NAME" = linux -a "$RUSTLS_VERSION" ]; then
   cargo install cbindgen
   cd $HOME/rustls-ffi
   make
-  make DESTDIR=$HOME/crust install
-fi
-
-if [ $TRAVIS_OS_NAME = linux -a "$WOLFSSL" ]; then
-  if [ ! -e $HOME/wolfssl-4.7.0-stable/Makefile ]; then
-    cd $HOME
-    curl -LO https://github.com/wolfSSL/wolfssl/archive/v4.7.0-stable.tar.gz
-    tar -xzf v4.7.0-stable.tar.gz
-    cd wolfssl-4.7.0-stable
-    ./autogen.sh
-    ./configure --enable-tls13 --enable-all
-    touch wolfssl/wolfcrypt/fips.h
-    make
-  fi
-
-  cd $HOME/wolfssl-4.7.0-stable
-  sudo make install
+  make DESTDIR=$HOME/rustls install
 fi
 
 # Install common libraries.

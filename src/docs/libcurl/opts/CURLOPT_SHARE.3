@@ -24,9 +24,11 @@
 .SH NAME
 CURLOPT_SHARE \- share handle to use
 .SH SYNOPSIS
+.nf
 #include <curl/curl.h>
 
 CURLcode curl_easy_setopt(CURL *handle, CURLOPT_SHARE, CURLSH *share);
+.fi
 .SH DESCRIPTION
 Pass a \fIshare\fP handle as a parameter. The share handle must have been
 created by a previous call to \fIcurl_share_init(3)\fP. Setting this option,
@@ -38,7 +40,7 @@ data. If the curl handles are used simultaneously in multiple threads, you
 
 If you add a share that is set to share cookies, your easy handle will use
 that cookie cache and get the cookie engine enabled. If you unshare an object
-that was using cookies (or change to another object that doesn't share
+that was using cookies (or change to another object that does not share
 cookies), the easy handle will get its cookie engine disabled.
 
 Data that the share object is not set to share will be dealt with the usual

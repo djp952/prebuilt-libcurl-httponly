@@ -148,6 +148,7 @@ Available substitute variables include:
 - `%SRCDIR` - Full path to the source dir
 - `%SSHPORT` - Port number of the SCP/SFTP server
 - `%SSHSRVMD5` - MD5 of SSH server's public key
+- `%SSHSRVSHA256` - SHA256 of SSH server's public key
 - `%SSH_PWD` - Current directory friendly for the SSH server
 - `%TESTNUMBER` - Number of the test case
 - `%TFTP6PORT` - IPv6 port number of the TFTP server
@@ -241,6 +242,9 @@ a datacheck section.
 The connect section is used instead of the 'data' for all CONNECT
 requests. The remainder of the rules for the data section then apply but with
 a connect prefix.
+
+### `<socks>`
+Address type and address details as logged by the SOCKS proxy.
 
 ### `<datacheck [mode="text"] [nonewline="yes"]>`
 if the data is sent but this is what should be checked afterwards. If
@@ -386,6 +390,8 @@ Features testable here are:
 - `Kerberos`
 - `large_file`
 - `ld_preload`
+- `libssh2`
+- `libssh`
 - `libz`
 - `manual`
 - `Mime`
@@ -414,6 +420,7 @@ Features testable here are:
 - `verbose-strings`
 - `wakeup`
 - `win32`
+- `wolfssh`
 
 as well as each protocol that curl supports.  A protocol only needs to be
 specified if it is different from the server (useful when the server

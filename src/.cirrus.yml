@@ -32,9 +32,6 @@ freebsd_task:
     - name: FreeBSD 12.2
       freebsd_instance:
         image_family: freebsd-12-2
-    - name: FreeBSD 11.4
-      freebsd_instance:
-        image_family: freebsd-11-4
 
   env:
     CIRRUS_CLONE_DEPTH: 10
@@ -43,7 +40,7 @@ freebsd_task:
 
   pkginstall_script:
     - pkg update -f
-    - pkg install -y autoconf automake libtool pkgconf brotli openldap-client heimdal libpsl libssh2 openssh-portable libidn2 librtmp libnghttp2 nghttp2 stunnel
+    - pkg install -y autoconf automake libtool pkgconf brotli openldap24-client heimdal libpsl libssh2 openssh-portable libidn2 librtmp libnghttp2 nghttp2 stunnel
     - pkg delete -y curl
     - easy_install "cryptography<3.2"
     - easy_install "pyOpenSSL<20.0"
@@ -60,7 +57,7 @@ freebsd_task:
     #  esac
     - ./configure --prefix="${HOME}"/install --enable-debug --with-openssl --with-libssh2 --with-brotli --with-gssapi --with-libidn2 --enable-manual --enable-ldap --enable-ldaps --with-librtmp --with-libpsl --with-nghttp2 || { tail -300 config.log; false; }
   compile_script:
-    - make V=1 && cd tests && make V=1
+    - make V=1 && make V=1 examples && cd tests && make V=1
   test_script:
     # blackhole?
     - sysctl net.inet.tcp.blackhole
@@ -71,7 +68,7 @@ freebsd_task:
     - find . -type d -exec chmod 777 {} \;
     # The OpenSSH server instance for the testsuite cannot be started on FreeBSD,
     # therefore the SFTP and SCP tests are disabled right away from the beginning.
-    - sudo -u nobody make V=1 TFLAGS="-n -a -p -u !flaky !SFTP !SCP" test-nonflaky
+    - sudo -u nobody make V=1 TFLAGS="-n !SFTP !SCP" test-ci
   install_script:
     - make V=1 install
 
@@ -88,14 +85,14 @@ windows_task:
         container_cmd: C:\msys64\usr\bin\sh
         prepare: pacman -S --needed --noconfirm --noprogressbar libssh2-devel mingw-w64-i686-libssh2
         configure: --host=i686-w64-mingw32 --build=i686-w64-mingw32 --prefix=/mingw32 --enable-werror --enable-sspi --with-schannel --with-winidn --with-libssh2
-        tests: ~165 ~310 ~571 ~612 ~1056 ~1299 ~1448 ~2034 ~2037 ~2041 ~2046 ~2047 ~3000 ~3001 !SCP
+        tests: "~571"
     - name: Windows 32-bit static/release Schannel/SSPI/WinIDN/libssh2
       env:
         container_img: ghcr.io/mback2k/curl-docker-winbuildenv/msys2-mingw32:ltsc2019
         container_cmd: C:\msys64\usr\bin\sh
         prepare: pacman -S --needed --noconfirm --noprogressbar libssh2-devel mingw-w64-i686-libssh2
         configure: --host=i686-w64-mingw32 --build=i686-w64-mingw32 --prefix=/mingw32 --enable-werror --enable-sspi --with-schannel --with-winidn --with-libssh2 --disable-shared --enable-static
-        tests: ~165 ~310 ~571 ~612 ~1056 ~1299 ~1448 ~2034 ~2037 ~2041 ~2046 ~2047 ~3000 ~3001 !SCP
+        tests: "~571"
         curl_LDFLAGS: -all-static
         PKG_CONFIG: pkg-config --static
     - name: Windows 64-bit shared/release Schannel/SSPI/WinIDN/libssh2
@@ -104,14 +101,14 @@ windows_task:
         container_cmd: C:\msys64\usr\bin\sh
         prepare: pacman -S --needed --noconfirm --noprogressbar libssh2-devel mingw-w64-x86_64-libssh2
         configure: --host=x86_64-w64-mingw32 --build=x86_64-w64-mingw32 --prefix=/mingw64 --enable-werror --enable-sspi --with-schannel --with-winidn --with-libssh2
-        tests: ~165 ~310 ~571 ~612 ~1056 ~1299 ~1448 ~2034 ~2037 ~2041 ~2046 ~2047 ~3000 ~3001 !SCP
+        tests: "~571"
     - name: Windows 64-bit static/release Schannel/SSPI/WinIDN/libssh2
       env:
         container_img: ghcr.io/mback2k/curl-docker-winbuildenv/msys2-mingw64:ltsc2019
         container_cmd: C:\msys64\usr\bin\sh
         prepare: pacman -S --needed --noconfirm --noprogressbar libssh2-devel mingw-w64-x86_64-libssh2
         configure: --host=x86_64-w64-mingw32 --build=x86_64-w64-mingw32 --prefix=/mingw64 --enable-werror --enable-sspi --with-schannel --with-winidn --with-libssh2 --disable-shared --enable-static
-        tests: ~165 ~310 ~571 ~612 ~1056 ~1299 ~1448 ~2034 ~2037 ~2041 ~2046 ~2047 ~3000 ~3001 !SCP
+        tests: "~571"
         curl_LDFLAGS: -all-static
         PKG_CONFIG: pkg-config --static
 
@@ -125,8 +122,8 @@ windows_task:
   configure_script: |
     %container_cmd% -l -c "cd $(echo '%cd%') && ./buildconf && ./configure %configure%"
   compile_script: |
-    %container_cmd% -l -c "cd $(echo '%cd%') && make V=1 && cd tests && make V=1"
+    %container_cmd% -l -c "cd $(echo '%cd%') && make V=1 && make V=1 examples && cd tests && make V=1"
   install_script: |
     %container_cmd% -l -c "cd $(echo '%cd%') && make V=1 install && PATH=/usr/bin:/bin find . -type f -path '*/.libs/*.exe' -print -execdir mv -t .. {} \;"
   test_script: |
-    %container_cmd% -l -c "cd $(echo '%cd%') && make V=1 TFLAGS='-u -r -rm %tests%' test-nonflaky"
+    %container_cmd% -l -c "cd $(echo '%cd%') && make V=1 TFLAGS='!IDN !SCP ~612 ~1056 %tests%' test-ci"

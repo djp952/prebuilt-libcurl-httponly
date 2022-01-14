@@ -228,10 +228,12 @@ man_MANS =                                      \
   CURLOPT_MAXCONNECTS.3                         \
   CURLOPT_MAXFILESIZE.3                         \
   CURLOPT_MAXFILESIZE_LARGE.3                   \
+  CURLOPT_MAXLIFETIME_CONN.3                    \
   CURLOPT_MAXREDIRS.3                           \
   CURLOPT_MAX_RECV_SPEED_LARGE.3                \
   CURLOPT_MAX_SEND_SPEED_LARGE.3                \
   CURLOPT_MIMEPOST.3                            \
+  CURLOPT_MIME_OPTIONS.3                        \
   CURLOPT_NETRC.3                               \
   CURLOPT_NETRC_FILE.3                          \
   CURLOPT_NEW_DIRECTORY_PERMS.3                 \
@@ -254,6 +256,8 @@ man_MANS =                                      \
   CURLOPT_POSTQUOTE.3                           \
   CURLOPT_POSTREDIR.3                           \
   CURLOPT_PREQUOTE.3                            \
+  CURLOPT_PREREQDATA.3                          \
+  CURLOPT_PREREQFUNCTION.3                      \
   CURLOPT_PRE_PROXY.3                           \
   CURLOPT_PRIVATE.3                             \
   CURLOPT_PROGRESSDATA.3                        \
@@ -326,6 +330,7 @@ man_MANS =                                      \
   CURLOPT_SSH_AUTH_TYPES.3                      \
   CURLOPT_SSH_COMPRESSION.3                     \
   CURLOPT_SSH_HOST_PUBLIC_KEY_MD5.3             \
+  CURLOPT_SSH_HOST_PUBLIC_KEY_SHA256.3          \
   CURLOPT_SSH_KEYDATA.3                         \
   CURLOPT_SSH_KEYFUNCTION.3                     \
   CURLOPT_SSH_KNOWNHOSTS.3                      \
@@ -395,4 +400,9 @@ man_MANS =                                      \
   CURLOPT_WRITEFUNCTION.3                       \
   CURLOPT_XFERINFODATA.3                        \
   CURLOPT_XFERINFOFUNCTION.3                    \
-  CURLOPT_XOAUTH2_BEARER.3
+  CURLOPT_XOAUTH2_BEARER.3                      \
+  CURLSHOPT_LOCKFUNC.3                          \
+  CURLSHOPT_SHARE.3                             \
+  CURLSHOPT_UNLOCKFUNC.3                        \
+  CURLSHOPT_UNSHARE.3                           \
+  CURLSHOPT_USERDATA.3

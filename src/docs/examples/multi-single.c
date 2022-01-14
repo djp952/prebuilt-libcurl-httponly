@@ -34,15 +34,6 @@
 /* curl stuff */
 #include <curl/curl.h>
 
-#ifdef _WIN32
-#define WAITMS(x) Sleep(x)
-#else
-/* Portable sleep for platforms other than Windows. */
-#define WAITMS(x)                               \
-  struct timeval wait = { 0, (x) * 1000 };      \
-  (void)select(0, NULL, NULL, NULL, &wait)
-#endif
-
 /*
  * Simply download a HTTP file.
  */
@@ -56,7 +47,7 @@ int main(void)
 
   http_handle = curl_easy_init();
 
-  /* set the options (I left out a few, you'll get the point anyway) */
+  /* set the options (I left out a few, you will get the point anyway) */
   curl_easy_setopt(http_handle, CURLOPT_URL, "https://www.example.com/");
 
   /* init a multi stack */

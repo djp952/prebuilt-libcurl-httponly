@@ -118,7 +118,7 @@ static void memory_tracking_init(void)
     curl_free(env);
     curl_dbg_memdebug(fname);
     /* this weird stuff here is to make curl_free() get called before
-       curl_gdb_memdebug() as otherwise memory tracking will log a free()
+       curl_dbg_memdebug() as otherwise memory tracking will log a free()
        without an alloc! */
   }
   /* if CURL_MEMLIMIT is set, this enables fail-on-alloc-number-N feature */
@@ -280,7 +280,7 @@ int main(int argc, char *argv[])
   }
 
 #ifdef __NOVELL_LIBC__
-  if(getenv("_IN_NETWARE_BASH_") == NULL)
+  if(!getenv("_IN_NETWARE_BASH_"))
     tool_pressanykey();
 #endif
 

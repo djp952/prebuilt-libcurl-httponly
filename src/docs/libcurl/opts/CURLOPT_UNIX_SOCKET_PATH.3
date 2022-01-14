@@ -24,9 +24,11 @@
 .SH NAME
 CURLOPT_UNIX_SOCKET_PATH \- Unix domain socket
 .SH SYNOPSIS
+.nf
 #include <curl/curl.h>
 
 CURLcode curl_easy_setopt(CURL *handle, CURLOPT_UNIX_SOCKET_PATH, char *path);
+.fi
 .SH DESCRIPTION
 Enables the use of Unix domain sockets as connection endpoint and sets the path
 to \fIpath\fP. If \fIpath\fP is NULL, then Unix domain sockets are disabled. An
@@ -72,7 +74,7 @@ you could use the proc filesystem to bypass the limitation:
   /* Be sure to keep dirfd valid until you discard the handle */
 .fi
 .SH AVAILABILITY
-Since 7.40.0.
+Added in 7.40.0.
 .SH RETURN VALUE
 Returns CURLE_OK if the option is supported, and CURLE_UNKNOWN_OPTION if not.
 .SH "SEE ALSO"

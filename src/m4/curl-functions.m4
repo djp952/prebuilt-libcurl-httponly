@@ -486,7 +486,7 @@ curl_includes_unistd="\
 dnl CURL_INCLUDES_WINSOCK2
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
-dnl included when winsock(2).h is to be included.
+dnl included when winsock2.h is to be included.
 
 AC_DEFUN([CURL_INCLUDES_WINSOCK2], [
 curl_includes_winsock2="\
@@ -498,15 +498,10 @@ curl_includes_winsock2="\
 #  include <windows.h>
 #  ifdef HAVE_WINSOCK2_H
 #    include <winsock2.h>
-#  else
-#    ifdef HAVE_WINSOCK_H
-#      include <winsock.h>
-#    endif
 #  endif
 #endif
 /* includes end */"
   CURL_CHECK_HEADER_WINDOWS
-  CURL_CHECK_HEADER_WINSOCK
   CURL_CHECK_HEADER_WINSOCK2
 ])
 
@@ -2053,6 +2048,10 @@ AC_DEFUN([CURL_CHECK_FUNC_GETADDRINFO], [
         ;;
       hpux*)
         dnl hpux 11.11 and newer
+        tst_tsafe_getaddrinfo="yes"
+        ;;
+      midnightbsd*)
+        dnl all MidnightBSD versions
         tst_tsafe_getaddrinfo="yes"
         ;;
       netbsd[[123]].*)
@@ -6515,11 +6514,17 @@ dnl CURL_LIBRARY_PATH variable. It keeps the LD_LIBRARY_PATH
 dnl changes contained within this macro.
 
 AC_DEFUN([CURL_RUN_IFELSE], [
-   old=$LD_LIBRARY_PATH
-   LD_LIBRARY_PATH=$CURL_LIBRARY_PATH:$old
-   export LD_LIBRARY_PATH
+   case $host_os in
+     darwin*) library_path_var=DYLD_LIBRARY_PATH ;;
+     *)       library_path_var=LD_LIBRARY_PATH ;;
+   esac
+
+   eval "old=$$library_path_var"
+   eval "$library_path_var=\$CURL_LIBRARY_PATH:\$old"
+
+   eval "export $library_path_var"
    AC_RUN_IFELSE([AC_LANG_SOURCE([$1])], $2, $3, $4)
-   LD_LIBRARY_PATH=$old # restore
+   eval "$library_path_var=\$old" # restore
 ])
 
 dnl CURL_COVERAGE

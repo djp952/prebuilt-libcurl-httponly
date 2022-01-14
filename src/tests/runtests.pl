@@ -6,7 +6,7 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2021, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 1998 - 2022, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
@@ -168,6 +168,7 @@ my $proxy_address;
 my %custom_skip_reasons;
 
 my $SSHSRVMD5 = "[uninitialized]"; # MD5 of ssh server public key
+my $SSHSRVSHA256 = "[uninitialized]"; # SHA256 of ssh server public key
 my $VERSION="";          # curl's reported version number
 
 my $srcdir = $ENV{'srcdir'} || '.';
@@ -184,6 +185,7 @@ my $UNITDIR="./unit";
 my $SERVERIN="$LOGDIR/server.input"; # what curl sent the server
 my $SERVER2IN="$LOGDIR/server2.input"; # what curl sent the second server
 my $PROXYIN="$LOGDIR/proxy.input"; # what curl sent the proxy
+my $SOCKSIN="$LOGDIR/socksd-request.log"; # what curl sent to the SOCKS proxy
 my $CURLLOG="commands.log"; # all command lines run
 my $FTPDCMD="$LOGDIR/ftpserver.cmd"; # copy server instructions here
 my $SERVERLOGS_LOCK="$LOGDIR/serverlogs.lock"; # server logs advisor read lock
@@ -267,6 +269,9 @@ my $has_manual;     # set if built with built-in manual
 my $has_win32;      # set if built for Windows
 my $has_mingw;      # set if built with MinGW (as opposed to MinGW-w64)
 my $has_hyper = 0;  # set if built with Hyper
+my $has_libssh2;    # set if built with libssh2
+my $has_libssh;     # set if built with libssh
+my $has_wolfssh;    # set if built with wolfssh
 my $has_unicode;    # set if libcurl is built with Unicode support
 
 # this version is decided by the particular nghttp2 library that is being used
@@ -2287,6 +2292,17 @@ sub runsshserver {
         die $msg;
     }
 
+    my $hstpubsha256f = "curl_host_rsa_key.pub_sha256";
+    if(!open(PUBSHA256FILE, "<", $hstpubsha256f) ||
+       (read(PUBSHA256FILE, $SSHSRVSHA256, 48) == 0) ||
+       !close(PUBSHA256FILE))
+    {
+        my $msg = "Fatal: $srvrname pubkey sha256 missing : \"$hstpubsha256f\" : $!";
+        logmsg "$msg\n";
+        stopservers($verbose);
+        die $msg;
+    }
+
     logmsg "RUN: $srvrname on PID $pid2 port $wport\n" if($verbose);
 
     return ($pid2, $sshpid, $wport);
@@ -2862,6 +2878,9 @@ sub setupfeatures {
     $feature{"large_file"} = $has_largefile;
     $feature{"ld_preload"} = ($has_ldpreload && !$debug_build);
     $feature{"libz"} = $has_libz;
+    $feature{"libssh2"} = $has_libssh2;
+    $feature{"libssh"} = $has_libssh;
+    $feature{"wolfssh"} = $has_wolfssh;
     $feature{"manual"} = $has_manual;
     $feature{"MinGW"} = $has_mingw;
     $feature{"MultiSSL"} = $has_multissl;
@@ -3014,6 +3033,15 @@ sub checksystem {
            if ($libcurl =~ /Hyper/i) {
                $has_hyper=1;
            }
+            if ($libcurl =~ /libssh2/i) {
+                $has_libssh2=1;
+            }
+            if ($libcurl =~ /libssh\//i) {
+                $has_libssh=1;
+            }
+            if ($libcurl =~ /wolfssh/i) {
+                $has_wolfssh=1;
+            }
         }
         elsif($_ =~ /^Protocols: (.*)/i) {
             # these are the protocols compiled in to this libcurl
@@ -3374,6 +3402,7 @@ sub subVariables {
     $$thing =~ s/${prefix}USER/$USER/g;
 
     $$thing =~ s/${prefix}SSHSRVMD5/$SSHSRVMD5/g;
+    $$thing =~ s/${prefix}SSHSRVSHA256/$SSHSRVSHA256/g;
 
     # The purpose of FTPTIME2 and FTPTIME3 is to provide times that can be
     # used for time-out tests and that would work on most hosts as these
@@ -4336,6 +4365,12 @@ sub singletest {
 
         # get the mode attribute
         my $filemode=$hash{'mode'};
+        if($filemode && ($filemode eq "text") && $has_hyper) {
+            # text mode check in hyper-mode. Sometimes necessary if the stderr
+            # data *looks* like HTTP and thus has gotten CRLF newlines
+            # mistakenly
+            map s/\r\n/\n/g, @validstderr;
+        }
         if($filemode && ($filemode eq "text") && $has_textaware) {
             # text mode when running on windows: fix line endings
             map s/\r\n/\n/g, @validstderr;
@@ -4551,6 +4586,17 @@ sub singletest {
         }
     }
     $ok .= ($outputok) ? "o" : "-"; # output checked or not
+
+    # verify SOCKS proxy details
+    my @socksprot = getpart("verify", "socks");
+    if(@socksprot) {
+        # Verify the sent SOCKS proxy details
+        my @out = loadarray($SOCKSIN);
+        $res = compare($testnum, $testname, "socks", \@out, \@socksprot);
+        if($res) {
+            return $errorreturncode;
+        }
+    }
 
     # accept multiple comma-separated error codes
     my @splerr = split(/ *, */, $errorcode);
@@ -6016,6 +6062,7 @@ if(azure_check_environment()) {
 #
 
 my $failed;
+my $failedign;
 my $testnum;
 my $ok=0;
 my $ign=0;
@@ -6051,8 +6098,8 @@ foreach $testnum (@at) {
 
     if($error>0) {
         if($error==2) {
-            # ignored test failures are wrapped in ()
-            $failed.= "($testnum) ";
+            # ignored test failures
+            $failedign .= "$testnum ";
         }
         else {
             $failed.= "$testnum ";
@@ -6138,6 +6185,9 @@ if($skipped && !$short) {
 }
 
 if($total) {
+    if($failedign) {
+        logmsg "IGNORED: failed tests: $failedign\n";
+    }
     logmsg sprintf("TESTDONE: $ok tests out of $total reported OK: %d%%\n",
                    $ok/$total*100);
 

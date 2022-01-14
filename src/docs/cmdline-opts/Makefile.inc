@@ -75,6 +75,7 @@ DPAGES = \
   fail-with-body.d \
   fail.d \
   false-start.d \
+  form-escape.d \
   form-string.d \
   form.d \
   ftp-account.d \
@@ -96,6 +97,7 @@ DPAGES = \
   header.d \
   help.d \
   hostpubmd5.d \
+  hostpubsha256.d \
   hsts.d \
   http0.9.d \
   http1.0.d \

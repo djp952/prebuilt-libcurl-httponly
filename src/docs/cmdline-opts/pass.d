@@ -4,6 +4,8 @@ Help: Pass phrase for the private key
 Protocols: SSH TLS
 Category: ssh tls auth
 Example: --pass secret --key file $URL
+Added: 7.9.3
+See-also: key user
 ---
 Passphrase for the private key.
 

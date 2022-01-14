@@ -8,7 +8,6 @@
 [![Backers on Open Collective](https://opencollective.com/curl/backers/badge.svg)](#backers)
 [![Sponsors on Open Collective](https://opencollective.com/curl/sponsors/badge.svg)](#sponsors)
 [![Language Grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/curl/curl.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/curl/curl/context:cpp)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d11483a0cc5c4ebd9da4ff9f7cd56690)](https://app.codacy.com/app/curl/curl)
 [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/curl.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:curl)
 
 Curl is a command-line tool for transferring data specified with URL
@@ -19,7 +18,7 @@ by reading [the INSTALL document](https://curl.se/docs/install.html).
 
 libcurl is the library curl is using to do its job. It is readily available to
 be used by your software. Read [the libcurl.3 man
-page](https://curl.se/libcurl/c/libcurl.html) to learn how!
+page](https://curl.se/libcurl/c/libcurl.html) to learn how.
 
 You can find answers to the most frequent questions we get in [the FAQ
 document](https://curl.se/docs/faq.html).
@@ -38,7 +37,7 @@ document](https://curl.se/docs/thanks.html).
 ## Commercial support
 
 For commercial support, maybe private and dedicated help with your problems or
-applications using (lib)curl: https://curl.se/support.html
+applications using (lib)curl visit [the support page](https://curl.se/support.html).
 
 ## Website
 
@@ -47,11 +46,11 @@ downloads.
 
 ## Git
 
-To download the very latest source from the Git server do this:
+To download the latest source from the Git server do this:
 
     git clone https://github.com/curl/curl.git
 
-(you'll get a directory named curl created, filled with the source code)
+(you will get a directory named curl created, filled with the source code)
 
 ## Security problems
 
